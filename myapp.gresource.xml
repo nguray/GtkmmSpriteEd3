@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+    <gresource prefix="/res">
+        <file>Ellipse.png</file>
+        <file>EllipseD.png</file>
+        <file>FloodFill.png</file>
+        <file>FloodFillD.png</file>
+        <file>Pencil.png</file>
+        <file>PencilD.png</file>
+        <file>Rectangle.png</file>
+        <file>RectangleD.png</file>
+        <file>SelectBox.png</file>
+        <file>SelectBoxD.png</file>
+        <file>PickColor.png</file>
+        <file>PauseTool.png</file>
+        <file>PlayTool.png</file>
+        <file>FlipHorizontalyIcon.png</file>
+        <file>FlipVerticalyIcon.png</file>
+        <file>Swing90LeftIcon.png</file>
+        <file>Swing90RightIcon.png</file>
+        <file>gtkspriteed.glade</file>
+    </gresource>
+</gresources>
