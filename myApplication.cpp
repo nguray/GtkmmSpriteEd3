@@ -112,7 +112,7 @@ void myApplication::on_play_mode()
 
 void myApplication::on_menu_new()
 {
-    //------------------------------------------------------------
+    //-----generate-header---------------------------------------------------------
     std::cout << "on_menu_new" << std::endl;
     m_sprite_area.CreateNewSprite();
 
@@ -133,7 +133,6 @@ void myApplication::on_menu_open()
     filter_pixbuf->set_name("All Images");
     filter_pixbuf->add_pixbuf_formats();
     dlg.add_filter(filter_pixbuf);
-
     //-- Show the dialog and wait for a user response
     int result = dlg.run();
 
@@ -157,7 +156,6 @@ void myApplication::on_menu_open()
         }
         break;
     }
-
     std::cout << "A File|Open menu item was selected." << std::endl;
 
 }
@@ -360,6 +358,7 @@ void myApplication::on_drop_drag_data_received(
 void myApplication::on_activate()
 {
     //--
+
     m_iconTheme = Gtk::IconTheme::get_default();
     m_iconTheme->add_resource_path("/res");
 

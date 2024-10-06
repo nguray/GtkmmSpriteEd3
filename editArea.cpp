@@ -183,10 +183,10 @@ void editArea::get_pixel(Glib::RefPtr<Gdk::Pixbuf> pixbuf, int x, int y, guchar 
     int width, height, rowstride, n_channels;
     guchar *pixels, *p;
     //-----------------------------------------------------------------------
-    *red = 0x00;
-    *green = 0x00;
-    *blue = 0x00;
-    *alpha = 0x00;
+    *red    = 0x00;
+    *green  = 0x00;
+    *blue   = 0x00;
+    *alpha  = 0x00;
     if (!pixbuf)
         return;
 
@@ -262,7 +262,6 @@ bool editArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
         m_edit_mode->m_offset = o2 * m_edit_mode->m_scale;
     }
 
-
     // paint the background
     //Gdk::Cairo::set_source_rgba(cr, get_style_context()->get_background_color());
     cr->set_source_rgba(200,200,200,255);
@@ -292,18 +291,18 @@ bool editArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
     cr->stroke();
 
     //-- Draw Frame
-    cr->set_source_rgba(0.1, 0.1, 0.1, 1.0);
-    cr->set_line_width(0.2);
-    int left = 1;
-    int top = 1;
-    int right = m_edit_mode->m_nbHPixels * m_edit_mode->m_offset + 2;
-    int bottom = m_edit_mode->m_nbVPixels * m_edit_mode->m_offset + 2;
-    cr->move_to(left,top);
-    cr->line_to(right,top);
-    cr->line_to(right,bottom);
-    cr->line_to(left,bottom);
-    cr->line_to(left,top);
-    cr->stroke();
+    // cr->set_source_rgba(0.1, 0.1, 0.1, 1.0);
+    // cr->set_line_width(0.2);
+    // int left = 1;
+    // int top = 1;
+    // int right = m_edit_mode->m_nbHPixels * m_edit_mode->m_offset + 2;
+    // int bottom = m_edit_mode->m_nbVPixels * m_edit_mode->m_offset + 2;
+    // cr->move_to(left,top);
+    // cr->line_to(right,top);
+    // cr->line_to(right,bottom);
+    // cr->line_to(left,bottom);
+    // cr->line_to(left,top);
+    // cr->stroke();
 
 
     //-- Draw Pixels

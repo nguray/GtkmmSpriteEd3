@@ -19,12 +19,11 @@ set(PROJECT_SOURCES
     editModeRect.cpp editModeRect.h 
     editModeSelect.cpp editModeSelect.h 
     palette.cpp palette.h 
-    resources.cpp 
     RHandle.cpp RHandle.h 
     RPoint.cpp RPoint.h 
     RRect.cpp RRect.h 
-    spriteArea.cpp spriteArea.h 
-
+    spriteArea.cpp spriteArea.h
+    resources.cpp
 )
 
 add_executable(${CMAKE_PROJECT_NAME} ${PROJECT_SOURCES})

@@ -123,12 +123,14 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                      <object class="GtkMenuItem" id="Undo">
+                      <object class="GtkImageMenuItem" id="undoItem">
+                        <property name="label">gtk-undo</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="action-name">actions.undo</property>
-                        <property name="label" translatable="yes">Undo</property>
                         <property name="use-underline">True</property>
+                        <property name="use-stock">True</property>
+                        <property name="always-show-image">True</property>
                       </object>
                     </child>
                     <child>
@@ -138,12 +140,14 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem" id="Cut">
+                      <object class="GtkImageMenuItem" id="cutItem">
+                        <property name="label">gtk-cut</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="action-name">actions.cut</property>
-                        <property name="label" translatable="yes">Cut</property>
                         <property name="use-underline">True</property>
+                        <property name="use-stock">True</property>
+                        <property name="always-show-image">True</property>
                       </object>
                     </child>
                     <child>
@@ -153,21 +157,25 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem" id="Copy">
+                      <object class="GtkImageMenuItem" id="copyItem">
+                        <property name="label">gtk-copy</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="action-name">actions.copy</property>
-                        <property name="label" translatable="yes">Copy</property>
                         <property name="use-underline">True</property>
+                        <property name="use-stock">True</property>
+                        <property name="always-show-image">True</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem" id="Paste">
+                      <object class="GtkImageMenuItem" id="pasteItem">
+                        <property name="label">gtk-paste</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="action-name">actions.paste</property>
-                        <property name="label" translatable="yes">Paste</property>
                         <property name="use-underline">True</property>
+                        <property name="use-stock">True</property>
+                        <property name="always-show-image">True</property>
                       </object>
                     </child>
                   </object>
