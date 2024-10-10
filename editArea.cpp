@@ -747,6 +747,13 @@ editArea::type_signal_sprite_modified editArea::signal_sprite_modified()
 
 }
 
+editArea::type_signal_new_sprite editArea::signal_new_sprite()
+{
+    //------------------------------------------------
+    return m_signal_new_sprite;
+
+}
+
 void editArea::on_pick_color_mode(int id_color)
 {
     //------------------------------------------------
@@ -795,4 +802,48 @@ void editArea::flip_verticaly()
     m_signal_sprite_modified.emit();
 
 
+}
+
+void editArea::rotate_left()
+{
+    //----------------------------------------
+    m_edit_mode->m_f_new_sprite = false;
+    m_edit_mode->BackupSprite();
+
+    m_edit_mode->m_sprite = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, TRUE, 8, 64, 64);
+    m_edit_mode->m_sprite->add_alpha(true,0,0,0);
+	m_edit_mode->m_sprite->fill(0x0000FFFF); // RGBA
+    m_edit_mode->m_f_new_sprite = true;
+
+
+    //--
+    m_refGdkWindow->invalidate(true);
+    if (m_edit_mode->m_f_new_sprite){
+        m_edit_mode->m_nbHPixels = m_edit_mode->m_sprite->get_width();
+        m_edit_mode->m_nbVPixels = m_edit_mode->m_sprite->get_height();
+        m_edit_mode->m_sprite_bak = m_edit_mode->m_sprite->copy();
+        m_signal_new_sprite.emit(m_edit_mode->m_sprite);
+    }
+
+}
+
+void editArea::rotate_right()
+{
+    //----------------------------------------
+    m_edit_mode->m_f_new_sprite = false;
+    m_edit_mode->BackupSprite();
+
+    m_edit_mode->m_sprite = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, TRUE, 8, 64, 64);
+    m_edit_mode->m_sprite->add_alpha(true,0,0,0);
+	m_edit_mode->m_sprite->fill(0x0000FFFF);
+    m_edit_mode->m_f_new_sprite = true;
+
+    //--
+    m_refGdkWindow->invalidate(true);
+    if (m_edit_mode->m_f_new_sprite){
+        m_edit_mode->m_nbHPixels = m_edit_mode->m_sprite->get_width();
+        m_edit_mode->m_nbVPixels = m_edit_mode->m_sprite->get_height();
+        m_edit_mode->m_sprite_bak = m_edit_mode->m_sprite->copy();
+        m_signal_new_sprite.emit(m_edit_mode->m_sprite);
+    }
 }

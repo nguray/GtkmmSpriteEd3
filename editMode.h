@@ -28,6 +28,7 @@ class editMode
         static guint32     m_foreGroundColor;
         static guint32     m_backGroundColor;
 
+        static bool                        m_f_new_sprite;
         static Glib::RefPtr<Gdk::Pixbuf>   m_sprite;
         static Glib::RefPtr<Gdk::Pixbuf>   m_sprite_bak;
      
@@ -59,6 +60,8 @@ class editMode
 
         void    flip_horizontaly(Glib::RefPtr<Gdk::Pixbuf> pixbufSrc,Glib::RefPtr<Gdk::Pixbuf> pixbufDes);
         void    flip_verticaly(Glib::RefPtr<Gdk::Pixbuf> pixbufSrc,Glib::RefPtr<Gdk::Pixbuf> pixbufDes);
+        void    rotate_left(Glib::RefPtr<Gdk::Pixbuf> pixbufSrc,Glib::RefPtr<Gdk::Pixbuf> pixbufDes);
+        void    rotate_right(Glib::RefPtr<Gdk::Pixbuf> pixbufSrc,Glib::RefPtr<Gdk::Pixbuf> pixbufDes);
 
         static int     m_select_state;
         static RRect   m_rect_select_pix;

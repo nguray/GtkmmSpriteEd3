@@ -360,7 +360,7 @@ void spriteArea::SetSprite(Glib::RefPtr<Gdk::Pixbuf> newSprite)
 	//--------------------------------------------------------
 	if ((m_id_select>=0)&&(m_id_select<m_nbCells)){
 		if (!newSprite->get_has_alpha()){
-			m_liste_sprites[m_id_select] = newSprite->add_alpha(true,0,0,0);;
+			m_liste_sprites[m_id_select] = newSprite->add_alpha(true,0,0,0); // RGBA
 		}else{
 			m_liste_sprites[m_id_select] = newSprite;
 		}
@@ -788,4 +788,11 @@ void spriteArea::on_menu_popup_delete()
 	}
 
 
+}
+
+void spriteArea::on_new_sprite(Glib::RefPtr<Gdk::Pixbuf> newSprite)
+{
+	//--------------------------------------------
+	SetSprite( newSprite);
+	m_refGdkWindow->invalidate(true);
 }

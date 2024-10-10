@@ -4,26 +4,6 @@
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkAction" id="action1"/>
   <object class="GtkAction" id="action2"/>
-  <object class="GtkImage" id="image1">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">FlipHorizontalyIcon</property>
-  </object>
-  <object class="GtkImage" id="image2">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">FlipVerticalyIcon</property>
-  </object>
-  <object class="GtkImage" id="image3">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">Swing90LeftIcon</property>
-  </object>
-  <object class="GtkImage" id="image4">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">Swing90RightIcon</property>
-  </object>
   <object class="GtkWindow" id="spriteedwin">
     <property name="can-focus">False</property>
     <child>
@@ -185,25 +165,21 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="FlipHorizontaly">
-                        <property name="label">Flip Horizontaly</property>
+                      <object class="GtkMenuItem" id="horizontal_symmetry">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="action-name">actions.flip_horizontaly</property>
-                        <property name="image">image1</property>
-                        <property name="use-stock">False</property>
-                        <property name="always-show-image">True</property>
+                        <property name="action-name">actions.horizontal_symmetry</property>
+                        <property name="label" translatable="yes">Horizontal Symmetry</property>
+                        <property name="use-underline">True</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="FlipVerticaly">
-                        <property name="label">Flip Verticaly</property>
+                      <object class="GtkMenuItem" id="vertical_symmetry">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="action-name">actions.flip_verticaly</property>
-                        <property name="image">image2</property>
-                        <property name="use-stock">False</property>
-                        <property name="always-show-image">True</property>
+                        <property name="action-name">actions.vertical_symmetry</property>
+                        <property name="label" translatable="yes">Vertical Symmetry</property>
+                        <property name="use-underline">True</property>
                       </object>
                     </child>
                     <child>
@@ -213,25 +189,21 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="SwingLeft">
-                        <property name="label">Swing 90° Left</property>
+                      <object class="GtkMenuItem" id="rotate_left">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="action-name">actions.swing_left</property>
-                        <property name="image">image3</property>
-                        <property name="use-stock">False</property>
-                        <property name="always-show-image">True</property>
+                        <property name="action-name">actions.rotate_left</property>
+                        <property name="label" translatable="yes">Rotate Left</property>
+                        <property name="use-underline">True</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="SwingRight">
-                        <property name="label">Swing 90° Right</property>
+                      <object class="GtkMenuItem" id="rotate_right">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="action-name">actions.swing_right</property>
-                        <property name="image">image4</property>
-                        <property name="use-stock">False</property>
-                        <property name="always-show-image">True</property>
+                        <property name="action-name">actions.rotate_right</property>
+                        <property name="label" translatable="yes">Rotate Right</property>
+                        <property name="use-underline">True</property>
                       </object>
                     </child>
                   </object>

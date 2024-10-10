@@ -17,18 +17,19 @@ double editMode::m_scale = 1.0f;
 guint32 editMode::m_foreGroundColor = 0;
 guint32 editMode::m_backGroundColor = 0;
 
-Glib::RefPtr<Gdk::Pixbuf>   editMode::m_sprite(NULL);
-Glib::RefPtr<Gdk::Pixbuf>   editMode::m_sprite_bak(NULL);
+bool  editMode::m_f_new_sprite = false; 
+Glib::RefPtr<Gdk::Pixbuf>   editMode::m_sprite(nullptr);
+Glib::RefPtr<Gdk::Pixbuf>   editMode::m_sprite_bak(nullptr);
 
 int                         editMode::m_select_state = 0;
 RRect                       editMode::m_rect_select_pix(0,0,0,0);
 
-Glib::RefPtr<Gdk::Pixbuf>   editMode::m_select_pixbuf(NULL);
+Glib::RefPtr<Gdk::Pixbuf>   editMode::m_select_pixbuf(nullptr);
 RRect                       editMode::m_rect_copy_pix(0,0,0,0);
-Glib::RefPtr<Gdk::Pixbuf>   editMode::m_copy_pixbuf(NULL);
+Glib::RefPtr<Gdk::Pixbuf>   editMode::m_copy_pixbuf(nullptr);
 RRect                       editMode::m_rect_select_pix_sav(0,0,0,0);
 bool                        editMode::m_select_move_flag = false;
-Glib::RefPtr<Gdk::Window>   editMode::m_refGdkWindow(NULL);
+Glib::RefPtr<Gdk::Window>   editMode::m_refGdkWindow(nullptr);
 
 editMode::editMode()
 {
@@ -411,6 +412,82 @@ void editMode::flip_verticaly(Glib::RefPtr<Gdk::Pixbuf> pixbufSrc,Glib::RefPtr<G
             pDes[3] = pSrc[3];
         }
     }
+
+}
+
+void editMode::rotate_left(Glib::RefPtr<Gdk::Pixbuf> pixbufSrc,Glib::RefPtr<Gdk::Pixbuf> pixbufDes)
+/*----------------------------------------------------------------------------*\
+    Description :
+
+
+    Date de création : 24-04-2014                       Raymond NGUYEN THANH
+\*----------------------------------------------------------------------------*/
+{
+    int width, height, rowstride, n_channels;
+    guchar *pixelsSrc, *pSrc;
+    guchar *pixelsDes, *pDes;
+    guchar red, green, blue, alpha;
+    
+    //-----------------------------------------------------------------------
+    if ((!pixbufSrc)||(!pixbufDes)) return;
+
+    n_channels = pixbufSrc->get_n_channels();
+
+    g_assert(pixbufSrc->get_colorspace() == Gdk::COLORSPACE_RGB); // 
+    g_assert(pixbufSrc->get_bits_per_sample() == 8);              //  
+    g_assert(pixbufSrc->get_has_alpha());                         //
+    g_assert(n_channels == 4);
+
+    width = pixbufSrc->get_width();   // 
+    height = pixbufSrc->get_height(); // 
+
+    //g_assert(x >= 0 && x < width);
+    //g_assert(y >= 0 && y < height);
+
+    rowstride = pixbufSrc->get_rowstride();
+
+    pixelsSrc = pixbufSrc->get_pixels();
+    pixelsDes = pixbufDes->get_pixels();
+
+
+
+}
+
+void editMode::rotate_right(Glib::RefPtr<Gdk::Pixbuf> pixbufSrc,Glib::RefPtr<Gdk::Pixbuf> pixbufDes)
+/*----------------------------------------------------------------------------*\
+    Description :
+
+
+    Date de création : 24-04-2014                       Raymond NGUYEN THANH
+\*----------------------------------------------------------------------------*/
+{
+    int width, height, rowstride, n_channels;
+    guchar *pixelsSrc, *pSrc;
+    guchar *pixelsDes, *pDes;
+    guchar red, green, blue, alpha;
+    //-----------------------------------------------------------------------
+    if ((!pixbufSrc)||(!pixbufDes)) return;
+
+    n_channels = pixbufSrc->get_n_channels();
+
+    g_assert(pixbufSrc->get_colorspace() == Gdk::COLORSPACE_RGB); // 
+
+    g_assert(pixbufSrc->get_bits_per_sample() == 8);              //  
+    g_assert(pixbufSrc->get_has_alpha());                         //
+    g_assert(n_channels == 4);
+
+    width = pixbufSrc->get_width();   // 
+    height = pixbufSrc->get_height(); // 
+
+    //g_assert(x >= 0 && x < width);
+    //g_assert(y >= 0 && y < height);
+
+    rowstride = pixbufSrc->get_rowstride();
+
+    pixelsSrc = pixbufSrc->get_pixels();
+    pixelsDes = pixbufDes->get_pixels();
+
+    
 
 }
 

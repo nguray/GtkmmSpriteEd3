@@ -304,15 +304,15 @@ void myApplication::on_action_flip_horizontaly()
 void myApplication::on_action_swing_left()
 {
     //------------------------------------------------------------
-    std::cout << "A Image|Swing 90 Left menu item was selected." << std::endl;
-
+    std::cout << "A Image|Rotate 90 Left menu item was selected." << std::endl;
+    m_edit_area.rotate_left();
 }
 
 void myApplication::on_action_swing_right()
 {
     //------------------------------------------------------------
-    std::cout << "A Image|Swing 90 Right menu item was selected." << std::endl;
-
+    std::cout << "A Image|Rotate 90 Right menu item was selected." << std::endl;
+    m_edit_area.rotate_right();
 }
 
 void myApplication::on_set_edit_sprite(Glib::RefPtr<Gdk::Pixbuf> sprite)
@@ -358,7 +358,6 @@ void myApplication::on_drop_drag_data_received(
 void myApplication::on_activate()
 {
     //--
-
     m_iconTheme = Gtk::IconTheme::get_default();
     m_iconTheme->add_resource_path("/res");
 
@@ -423,10 +422,10 @@ void myApplication::on_activate()
     actionGroup->add_action("paste",sigc::mem_fun(*this,&myApplication::on_action_edit_paste));
     actionGroup->add_action("cut",sigc::mem_fun(*this,&myApplication::on_action_edit_cut));
 
-    actionGroup->add_action("flip_horizontaly",sigc::mem_fun(*this,&myApplication::on_action_flip_horizontaly));
-    actionGroup->add_action("flip_verticaly",sigc::mem_fun(*this,&myApplication::on_action_flip_verticaly));
-    actionGroup->add_action("swing_left",sigc::mem_fun(*this,&myApplication::on_action_swing_left));
-    actionGroup->add_action("swing_right",sigc::mem_fun(*this,&myApplication::on_action_swing_right));
+    actionGroup->add_action("horizontal_symmetry",sigc::mem_fun(*this,&myApplication::on_action_flip_horizontaly));
+    actionGroup->add_action("vertical_symmetry",sigc::mem_fun(*this,&myApplication::on_action_flip_verticaly));
+    actionGroup->add_action("rotate_left",sigc::mem_fun(*this,&myApplication::on_action_swing_left));
+    actionGroup->add_action("rotate_right",sigc::mem_fun(*this,&myApplication::on_action_swing_right));
 
 
     m_window->insert_action_group("actions", actionGroup);
@@ -464,6 +463,9 @@ void myApplication::on_activate()
                      &palette::on_set_background_color) );
     m_edit_area.signal_sprite_modified().connect(sigc::mem_fun(m_sprite_area,
                      &spriteArea::on_sprite_modified) );
+    m_edit_area.signal_new_sprite().connect(sigc::mem_fun(m_sprite_area,
+                     &spriteArea::on_new_sprite) );
+
     m_edit_area.SetSprite(m_sprite_area.m_liste_sprites[0]);
 
     m_sprite_area.signal_sprite_pick().connect(sigc::mem_fun(this,

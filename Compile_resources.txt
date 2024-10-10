@@ -5,6 +5,7 @@ Création du fichier des resource :
     le fichier généré "myapp.gresource" est dans le répertoire courant 
 
 glib-compile-resources --target=resources.cpp --generate-source --sourcedir res myapp.gresource.xml
+glib-compile-resources --target=resources.h --generate-header --sourcedir res myapp.gresource.xml
 
 remarques :
     En cas de modification de gtk_sprite_ed.glade, il faut lancer du répertoire projet : glade res/gtk_sprite_ed.glade

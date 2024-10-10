@@ -47,6 +47,7 @@ class spriteArea : public Gtk::Widget
         int     m_i_sequence;
         sigc::connection m_connection_timer;
         bool    on_timeout(int timer_number);
+        void    on_new_sprite(Glib::RefPtr<Gdk::Pixbuf> newSprite);
 
     protected:
 
