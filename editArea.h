@@ -35,8 +35,6 @@ class editArea : public Gtk::Widget
         typedef sigc::signal<void, guint32> type_signal_backcolor_pick;
         type_signal_backcolor_pick signal_backcolor_pick();
 
-        typedef sigc::signal<void, Glib::RefPtr<Gdk::Pixbuf>> type_signal_new_sprite;
-        type_signal_new_sprite signal_new_sprite();
 
 
         void    on_palette_color_select(bool f, guint32 selColor);
@@ -77,7 +75,6 @@ class editArea : public Gtk::Widget
         type_signal_forecolor_pick  m_signal_forecolor_pick;
         type_signal_backcolor_pick  m_signal_backcolor_pick;
         type_signal_sprite_modified m_signal_sprite_modified;
-        type_signal_new_sprite      m_signal_new_sprite;
 
 
         Glib::RefPtr<Gdk::Window>           m_refGdkWindow;

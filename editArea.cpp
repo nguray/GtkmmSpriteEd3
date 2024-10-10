@@ -349,6 +349,8 @@ bool editArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
     // Gdk::Cairo::set_source_pixbuf(cr,m_edit_mode->m_sprite_bak, 32*m_edit_mode->m_offset+10, 64);
     // cr->paint();
 
+    Gdk::Cairo::set_source_pixbuf(cr,m_edit_mode->m_sprite_bak, 32*m_edit_mode->m_offset+10, 0);
+    cr->paint();
 
 /*
     cr->set_source_rgba(0.337, 0.612, 0.117, 0.9);   // green
@@ -712,8 +714,9 @@ void editArea::Undo()
 {
     //------------------------------------------------
     m_edit_mode->init_mode();
-    m_edit_mode->UndoSprite();
+    m_edit_mode->RestoreState();
     m_refGdkWindow->invalidate(true);
+    m_signal_sprite_modified.emit();
 
 }
 
@@ -721,8 +724,8 @@ void editArea::Redo()
 {
     //------------------------------------------------
     m_edit_mode->init_mode();
-    m_edit_mode->UndoSprite();
-    m_refGdkWindow->invalidate(true);
+//    m_edit_mode->UndoSprite();
+//    m_refGdkWindow->invalidate(true);
 
 }
 
@@ -744,13 +747,6 @@ editArea::type_signal_sprite_modified editArea::signal_sprite_modified()
 {
     //------------------------------------------------
     return m_signal_sprite_modified;
-
-}
-
-editArea::type_signal_new_sprite editArea::signal_new_sprite()
-{
-    //------------------------------------------------
-    return m_signal_new_sprite;
 
 }
 
@@ -822,7 +818,7 @@ void editArea::rotate_left()
         m_edit_mode->m_nbHPixels = m_edit_mode->m_sprite->get_width();
         m_edit_mode->m_nbVPixels = m_edit_mode->m_sprite->get_height();
         m_edit_mode->m_sprite_bak = m_edit_mode->m_sprite->copy();
-        m_signal_new_sprite.emit(m_edit_mode->m_sprite);
+        //m_signal_new_sprite.emit(m_edit_mode->m_sprite);
     }
 
 }
@@ -844,6 +840,6 @@ void editArea::rotate_right()
         m_edit_mode->m_nbHPixels = m_edit_mode->m_sprite->get_width();
         m_edit_mode->m_nbVPixels = m_edit_mode->m_sprite->get_height();
         m_edit_mode->m_sprite_bak = m_edit_mode->m_sprite->copy();
-        m_signal_new_sprite.emit(m_edit_mode->m_sprite);
+        //m_signal_new_sprite.emit(m_edit_mode->m_sprite);
     }
 }

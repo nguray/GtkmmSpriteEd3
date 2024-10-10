@@ -31,6 +31,8 @@ RRect                       editMode::m_rect_select_pix_sav(0,0,0,0);
 bool                        editMode::m_select_move_flag = false;
 Glib::RefPtr<Gdk::Window>   editMode::m_refGdkWindow(nullptr);
 
+std::vector<Glib::RefPtr<Gdk::Pixbuf>> editMode::m_states;
+
 editMode::editMode()
 {
     //ctor
@@ -514,13 +516,13 @@ void editMode::RestoreSprite()
 void editMode::UndoSprite()
 {
     int     w,h;
-    Glib::RefPtr<Gdk::Pixbuf>   sprite_redo;
+    //Glib::RefPtr<Gdk::Pixbuf>   sprite_redo;
     //-------------------------------------------------------
     h = m_sprite_bak->get_height();
     w = m_sprite_bak->get_width();
-    sprite_redo = m_sprite->copy();
+    //sprite_redo = m_sprite->copy();
     m_sprite_bak->copy_area( 0, 0, w, h, m_sprite, 0, 0);
-    sprite_redo->copy_area( 0, 0, w, h, m_sprite_bak, 0, 0);
+    //sprite_redo->copy_area( 0, 0, w, h, m_sprite_bak, 0, 0);
 
 }
 
@@ -607,3 +609,44 @@ void editMode::line(Glib::RefPtr<Gdk::Pixbuf> pixbuf, gint x0, gint y0,gint x1,g
 
 }
 
+editMode::type_signal_new_sprite editMode::signal_new_sprite()
+{
+    //------------------------------------------------
+    return m_signal_new_sprite;
+
+}
+
+
+void editMode::SaveState()
+{
+    auto sprite = m_sprite->copy();
+    m_states.push_back(sprite);
+}
+
+void editMode::RestoreState()
+{
+    if (m_states.size()){
+
+        auto oldSprite = m_states.back();
+        m_states.pop_back();
+
+        auto oldWidth = oldSprite->get_width();
+        auto oldHeight = oldSprite->get_height();
+        auto curWidth = m_sprite->get_width();
+        auto curHeight = m_sprite->get_height();
+
+        if ((oldWidth!=curWidth)||(oldHeight!=curHeight)){
+            auto bits_per_sample = m_sprite->get_bits_per_sample();
+            m_sprite = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, TRUE, bits_per_sample, oldWidth, oldHeight);
+            m_sprite->add_alpha(true,0,0,0);
+
+        }else{
+            oldSprite->copy_area( 0, 0, curWidth, curHeight, m_sprite, 0, 0);
+
+            //oldSprite->copy_area( 0, 0, curWidth, curHeight, m_sprite_bak, 0, 0);
+            
+        }
+
+    }
+
+}

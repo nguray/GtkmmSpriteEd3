@@ -463,7 +463,7 @@ void myApplication::on_activate()
                      &palette::on_set_background_color) );
     m_edit_area.signal_sprite_modified().connect(sigc::mem_fun(m_sprite_area,
                      &spriteArea::on_sprite_modified) );
-    m_edit_area.signal_new_sprite().connect(sigc::mem_fun(m_sprite_area,
+    m_edit_area.m_edit_mode->signal_new_sprite().connect(sigc::mem_fun(m_sprite_area,
                      &spriteArea::on_new_sprite) );
 
     m_edit_area.SetSprite(m_sprite_area.m_liste_sprites[0]);
