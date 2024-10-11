@@ -62,7 +62,7 @@ palette::palette():Glib::ObjectBase("myPalette"),Gtk::Widget(),m_Menu_Popup(NULL
 //        std::cerr << "Gtk::CssProvider::load_from_data() failed: " << ex.what() << std::endl;
 //    }
 
-    m_cellSize = 24;
+    m_cellSize = 20;
     m_nbRows = 2;
     m_nbColumns = 20;
     int n = m_nbRows*m_nbColumns;
@@ -114,28 +114,28 @@ palette::~palette()
 
 void palette::get_preferred_width_vfunc(int& minimum_width, int& natural_width) const
 {
-  minimum_width = 26*16;
-  natural_width = 26*16;
+  minimum_width = 24*16;
+  natural_width = 24*16;
 }
 
 void palette::get_preferred_height_for_width_vfunc(int /* width */,
    int& minimum_height, int& natural_height) const
 {
-  minimum_height = 26;
-  natural_height = 26;
+  minimum_height = 24;
+  natural_height = 24;
 }
 
 void palette::get_preferred_height_vfunc(int& minimum_height, int& natural_height) const
 {
-  minimum_height = 26*2;
-  natural_height = 26*2;
+  minimum_height = 24*2;
+  natural_height = 24*2;
 }
 
 void palette::get_preferred_width_for_height_vfunc(int /* height */,
    int& minimum_width, int& natural_width) const
 {
-  minimum_width = 26*16;
-  natural_width = 26*16;
+  minimum_width = 24*16;
+  natural_width = 24*16;
 }
 
 void palette::on_size_allocate(Gtk::Allocation& allocation)

@@ -74,14 +74,14 @@ void spriteArea::get_preferred_width_vfunc(int &minimum_width, int &natural_widt
 void spriteArea::get_preferred_height_for_width_vfunc(int /* width */,
 													  int &minimum_height, int &natural_height) const
 {
-	minimum_height = 64 * 8;
-	natural_height = 64 * 8;
+	minimum_height = 64 * 9;
+	natural_height = 64 * 9;
 }
 
 void spriteArea::get_preferred_height_vfunc(int &minimum_height, int &natural_height) const
 {
-	minimum_height = 64*8;
-	natural_height = 64*8;
+	minimum_height = 64*9;
+	natural_height = 64*9;
 }
 
 void spriteArea::get_preferred_width_for_height_vfunc(int /* height */,
@@ -212,12 +212,14 @@ bool spriteArea::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	//-- Draw Sprites
 	m_left = 0;
 	m_right = m_cellSize;
-	x = (m_left + m_right) / 2 - (m_sprite_width / 2);
 	for (int i = 0; i < m_nbCells; i++)
 	{
-		if (m_liste_sprites[i])
+		if (auto sprite=m_liste_sprites[i])
 		{
-			y = i * m_cellSize + m_cellSize / 2 - (m_sprite_height / 2);
+			auto w = sprite->get_width();
+			auto h = sprite->get_height();
+			x = (m_left + m_right) / 2 - (w / 2);
+			y = i * m_cellSize + m_cellSize / 2 - (h / 2);
 			Gdk::Cairo::set_source_pixbuf(cr, m_liste_sprites[i], x, y);
 			cr->paint();
 		}
@@ -225,12 +227,14 @@ bool spriteArea::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	//--
 	if (m_i_sequence>=0){
-		if ( m_liste_sprites[m_i_sequence]){
+		if ( auto sprite=m_liste_sprites[m_i_sequence]){
 			int left = 0;
 			int right = m_cellSize;
-			x = (left + right) / 2 - (m_sprite_width / 2);
-			y = m_nbCells * m_cellSize + m_cellSize / 2 - (m_sprite_height / 2);
-			Gdk::Cairo::set_source_pixbuf(cr, m_liste_sprites[m_i_sequence], x, y);
+			auto w = sprite->get_width();
+			auto h = sprite->get_height();
+			x = (left + right) / 2 - (w / 2);
+			y = m_nbCells * m_cellSize + m_cellSize / 2 - (h / 2);
+			Gdk::Cairo::set_source_pixbuf(cr, sprite, x, y);
 			cr->paint();
 			//-- Draw sequence mark
 			int top = m_i_sequence * m_cellSize;
@@ -285,7 +289,6 @@ bool spriteArea::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		cr->stroke();
 
 	}
-
 
 	return true;
 }

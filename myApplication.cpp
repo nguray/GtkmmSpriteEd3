@@ -364,7 +364,7 @@ void myApplication::on_activate()
     auto builder = Gtk::Builder::create_from_resource("/res/gtkspriteed.glade");
 
     builder->get_widget("spriteedwin",m_window);
-    m_window->set_default_size(640,700);
+    m_window->set_default_size(640,736);
     m_window->set_position(Gtk::WIN_POS_CENTER);
     add_window(*m_window);
     m_window->present();
