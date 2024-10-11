@@ -18,7 +18,6 @@ guint32 editMode::m_backGroundColor = 0;
 
 bool  editMode::m_f_new_sprite = false; 
 Glib::RefPtr<Gdk::Pixbuf>   editMode::m_sprite(nullptr);
-//Glib::RefPtr<Gdk::Pixbuf>   editMode::m_sprite_bak(nullptr);
 
 int                         editMode::m_select_state = 0;
 RRect                       editMode::m_rect_select_pix(0,0,0,0);
@@ -491,39 +490,6 @@ void editMode::rotate_right(Glib::RefPtr<Gdk::Pixbuf> pixbufSrc,Glib::RefPtr<Gdk
     
 
 }
-
-// void editMode::BackupSprite()
-// {
-//     int     w,h;
-//     //-------------------------------------------------------
-//     h = m_sprite->get_height();
-//     w = m_sprite->get_width();
-//     m_sprite->copy_area( 0, 0, w, h, m_sprite_bak, 0, 0);
-
-// }
-
-// void editMode::RestoreSprite()
-// {
-//     int     w,h;
-//     //-------------------------------------------------------
-//     h = m_sprite_bak->get_height();
-//     w = m_sprite_bak->get_width();
-//     m_sprite_bak->copy_area( 0, 0, w, h, m_sprite, 0, 0);
-
-// }
-
-// void editMode::UndoSprite()
-// {
-//     int     w,h;
-//     //Glib::RefPtr<Gdk::Pixbuf>   sprite_redo;
-//     //-------------------------------------------------------
-//     h = m_sprite_bak->get_height();
-//     w = m_sprite_bak->get_width();
-//     //sprite_redo = m_sprite->copy();
-//     m_sprite_bak->copy_area( 0, 0, w, h, m_sprite, 0, 0);
-//     //sprite_redo->copy_area( 0, 0, w, h, m_sprite_bak, 0, 0);
-
-// }
 
 void editMode::line(Glib::RefPtr<Gdk::Pixbuf> pixbuf, gint x0, gint y0,gint x1,gint y1,guint32 c)
 /*----------------------------------------------------------------------------*\
