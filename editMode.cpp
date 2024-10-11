@@ -1,5 +1,4 @@
 #include "editMode.h"
-#include <iostream>
 #include "palette.h"
 
 int editMode::m_offset = 22;
@@ -643,8 +642,6 @@ void editMode::RestoreState()
         }else{
             oldSprite->copy_area( 0, 0, curWidth, curHeight, m_sprite, 0, 0);
 
-            //oldSprite->copy_area( 0, 0, curWidth, curHeight, m_sprite_bak, 0, 0);
-            
         }
 
     }
