@@ -280,7 +280,7 @@ bool editModeSelect::on_motion_notify_event(GdkEventMotion *event) {
         if ((startX != endX) || (startY != endY)) {
           if (m_select_pixbuf) {
             //-- restore backup
-            RestoreSprite();
+            RestoreStartState();
             //--
             BlitPixBuf(m_sprite, m_rect_select_pix.left, m_rect_select_pix.top,
                        m_select_pixbuf,

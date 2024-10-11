@@ -24,8 +24,7 @@ bool editModeFill::on_button_press_event(GdkEventButton *event)
 
     if (MouseToPixel(tmx,tmy,pixelX,pixelY)){
         //-- Sauvegarder l'image d'origine
-        //m_sprite_backup = m_sprite->copy();
-        BackupSprite();
+        SaveState();
 
         if (event->button==1){
             color = m_foreGroundColor;

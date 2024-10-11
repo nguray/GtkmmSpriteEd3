@@ -37,7 +37,7 @@ public:
 
     static bool                        m_f_new_sprite;
     static Glib::RefPtr<Gdk::Pixbuf>   m_sprite;
-    static Glib::RefPtr<Gdk::Pixbuf>   m_sprite_bak;
+    //static Glib::RefPtr<Gdk::Pixbuf>   m_sprite_bak;
     
     static Glib::RefPtr<Gdk::Pixbuf>   m_select_pixbuf;
     static RRect                       m_rect_copy_pix;
@@ -47,13 +47,14 @@ public:
 
     static std::vector<Glib::RefPtr<Gdk::Pixbuf>> m_states;
 
-    void    BackupSprite();
-    void    RestoreSprite();
+    // void    BackupSprite();
+    // void    RestoreSprite();
 
     void    SaveState();
     void    RestoreState();
+    void    RestoreStartState();
 
-    void    UndoSprite();
+//    void    UndoSprite();
 
     bool    MouseToPixel(int mx,int my,int &pixelX,int &pixelY);
     bool    PixelToMouse(int pixelX,int pixelY,int &mouseX,int &mouseY);

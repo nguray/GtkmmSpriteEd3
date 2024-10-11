@@ -34,7 +34,6 @@ bool editModePencil::on_button_press_event(GdkEventButton *event)
 
     if (MouseToPixel(tmx,tmy,m_pixelX,m_pixelY)&&PtInEditArea(tmx, tmy)){
         SaveState();
-        BackupSprite();
         if (event->state & GDK_CONTROL_MASK){
             line( m_sprite, m_lastPixelX, m_lastPixelY, m_pixelX, m_pixelY, color);
             return true;
@@ -96,7 +95,7 @@ bool editModePencil::on_motion_notify_event(GdkEventMotion *event)
             m_pixelX = pixelX;
             m_pixelY = pixelY;
             if (event->state & GDK_CONTROL_MASK){
-                RestoreSprite();
+                RestoreStartState();
                 line( m_sprite, m_lastPixelX, m_lastPixelY, pixelX, pixelY, color);
                 return true;
             }else{

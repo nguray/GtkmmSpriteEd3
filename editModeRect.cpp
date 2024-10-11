@@ -66,22 +66,19 @@ bool editModeRect::on_button_press_event(GdkEventButton *event)
             }
         }
 
-    }
-
-    InitHandles();
-    m_select_move_flag = false;
-    m_rect_current_pix.SetNULL();
-    if (MouseToPixel(tmx, tmy, pixelX, pixelY))
-    {
-        if (!m_start_pt)
+        InitHandles();
+        m_select_move_flag = false;
+        m_rect_current_pix.SetNULL();
+        if (MouseToPixel(tmx, tmy, pixelX, pixelY))
         {
-            m_start_pt = new Gdk::Point(pixelX, pixelY);
-            //-- Sauvegarder l'image d'origine
-            //m_sprite_backup = m_sprite->copy();
-            BackupSprite();
+            if (!m_start_pt)
+            {
+                m_start_pt = new Gdk::Point(pixelX, pixelY);
+                //-- Sauvegarder l'image d'origine
+                SaveState();
+            }
         }
     }
-
     return true;
 }
 
@@ -281,7 +278,7 @@ bool editModeRect::on_motion_notify_event(GdkEventMotion *event)
             m_rect_current_pix.right = endX+1;
             m_rect_current_pix.bottom = endY+1;
              
-            RestoreSprite();
+            RestoreStartState();
 
             if ((startX != endX) || (startY != endY))
             {
@@ -326,7 +323,9 @@ bool editModeRect::on_motion_notify_event(GdkEventMotion *event)
             {
                 pixelY = maxV;
             }
-            RestoreSprite();
+
+            RestoreStartState();
+            
             if (!m_end_pt)
             {
                 m_end_pt = new Gdk::Point(pixelX, pixelY);
@@ -429,7 +428,8 @@ bool editModeRect::on_motion_notify_event(GdkEventMotion *event)
                     m_x2 = right;
                     m_y2 = bottom;
 
-                    RestoreSprite();
+                    RestoreStartState();
+
                     if ((startX != endX) || (startY != endY))
                     {
                         if (m_current_fill_mode)

@@ -62,8 +62,7 @@ bool editModeEllipse::on_button_press_event(GdkEventButton *event) {
         if (!m_start_pt) {
             m_start_pt = new Gdk::Point(pixelX, pixelY);
             //-- Sauvegarder l'image d'origine
-            // m_sprite_backup = m_sprite->copy();
-            BackupSprite();
+            SaveState();
         }
     }
 
@@ -398,7 +397,7 @@ bool editModeEllipse::on_motion_notify_event(GdkEventMotion *event) {
             m_rect_current_pix.right = endX + 1;
             m_rect_current_pix.bottom = endY + 1;
 
-            RestoreSprite();
+            RestoreStartState();
 
             if ((startX != endX) || (startY != endY)) {
                 if (m_current_fill_mode) {
@@ -434,7 +433,7 @@ bool editModeEllipse::on_motion_notify_event(GdkEventMotion *event) {
             if (pixelY > maxV) {
                 pixelY = maxV;
             }
-            RestoreSprite();
+            RestoreStartState();
             if (!m_end_pt) {
                 m_end_pt = new Gdk::Point(pixelX, pixelY);
             } else {
@@ -529,7 +528,7 @@ bool editModeEllipse::on_motion_notify_event(GdkEventMotion *event) {
                     m_x2 = right;
                     m_y2 = bottom;
 
-                    RestoreSprite();
+                    RestoreStartState();
                     if ((startX != endX) || (startY != endY)) {
                         if (event->state & GDK_CONTROL_MASK) {
                             m_current_fill_mode = true;

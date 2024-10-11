@@ -349,9 +349,6 @@ bool editArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
     // Gdk::Cairo::set_source_pixbuf(cr,m_edit_mode->m_sprite_bak, 32*m_edit_mode->m_offset+10, 64);
     // cr->paint();
 
-    Gdk::Cairo::set_source_pixbuf(cr,m_edit_mode->m_sprite_bak, 32*m_edit_mode->m_offset+10, 0);
-    cr->paint();
-
 /*
     cr->set_source_rgba(0.337, 0.612, 0.117, 0.9);   // green
 
@@ -530,7 +527,6 @@ void editArea::SetSprite(Glib::RefPtr<Gdk::Pixbuf> sprite)
         }else{
             m_edit_mode->m_sprite = sprite;
         }
-        m_edit_mode->m_sprite_bak = m_edit_mode->m_sprite->copy();
         m_edit_mode->m_nbHPixels = sprite->get_width();
         m_edit_mode->m_nbVPixels = sprite->get_height();
         if (m_refGdkWindow) m_refGdkWindow->invalidate(true);
@@ -597,7 +593,7 @@ void editArea::CopySelect()
             }
             m_edit_mode->FillPixBuf(m_edit_mode->m_select_pixbuf,m_edit_mode->m_rect_select_pix,m_edit_mode->m_backGroundColor);
             m_edit_mode->BlitPixBuf(m_edit_mode->m_select_pixbuf, 0, 0, m_edit_mode->m_sprite, m_edit_mode->m_rect_select_pix);
-            m_edit_mode->BackupSprite();
+            m_edit_mode->SaveState();
             m_edit_mode->m_rect_copy_pix = m_edit_mode->m_rect_select_pix;
             m_edit_mode->m_copy_pixbuf = m_edit_mode->m_select_pixbuf->copy();
             m_edit_mode->init_mode();
@@ -623,7 +619,7 @@ void editArea::on_image_received(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf)
 {
     //------------------------------------------------
 
-    m_edit_mode->BackupSprite();
+    m_edit_mode->SaveState();
 
     int w,h;
     int wi = pixbuf->get_width();
@@ -686,7 +682,7 @@ void editArea::CutSelect()
             }
             m_edit_mode->FillPixBuf(m_edit_mode->m_select_pixbuf,m_edit_mode->m_rect_select_pix,m_edit_mode->m_backGroundColor);
             m_edit_mode->BlitPixBuf(m_edit_mode->m_select_pixbuf, 0, 0, m_edit_mode->m_sprite, m_edit_mode->m_rect_select_pix);
-            m_edit_mode->BackupSprite();
+            m_edit_mode->SaveState();
             m_edit_mode->m_rect_copy_pix = m_edit_mode->m_rect_select_pix;
             m_edit_mode->m_copy_pixbuf = m_edit_mode->m_select_pixbuf->copy();
             m_refGdkWindow->invalidate(true);
@@ -769,10 +765,11 @@ void editArea::flip_horizontaly()
     //--
     m_edit_mode->init_mode();
 
-    m_edit_mode->BackupSprite();
+    m_edit_mode->SaveState();
     //priv->undo_mode = UNDO_FLIP_HORIZONTALY;
 
-    m_edit_mode->flip_horizontaly(m_edit_mode->m_sprite_bak,m_edit_mode->m_sprite);
+    auto sprite = m_edit_mode->m_states.back();
+    m_edit_mode->flip_horizontaly(sprite,m_edit_mode->m_sprite);
 
     //--
     m_refGdkWindow->invalidate(true);
@@ -788,10 +785,11 @@ void editArea::flip_verticaly()
     //--
     m_edit_mode->init_mode();
 
-    m_edit_mode->BackupSprite();
+    m_edit_mode->SaveState();
     //priv->undo_mode = UNDO_FLIP_VERTICALY;
 
-    m_edit_mode->flip_verticaly(m_edit_mode->m_sprite_bak,m_edit_mode->m_sprite);
+    auto sprite = m_edit_mode->m_states.back();
+    m_edit_mode->flip_verticaly(sprite,m_edit_mode->m_sprite);
 
     //--
     m_refGdkWindow->invalidate(true);
@@ -804,7 +802,7 @@ void editArea::rotate_left()
 {
     //----------------------------------------
     m_edit_mode->m_f_new_sprite = false;
-    m_edit_mode->BackupSprite();
+    m_edit_mode->SaveState();
 
     m_edit_mode->m_sprite = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, TRUE, 8, 64, 64);
     m_edit_mode->m_sprite->add_alpha(true,0,0,0);
@@ -817,7 +815,6 @@ void editArea::rotate_left()
     if (m_edit_mode->m_f_new_sprite){
         m_edit_mode->m_nbHPixels = m_edit_mode->m_sprite->get_width();
         m_edit_mode->m_nbVPixels = m_edit_mode->m_sprite->get_height();
-        m_edit_mode->m_sprite_bak = m_edit_mode->m_sprite->copy();
         //m_signal_new_sprite.emit(m_edit_mode->m_sprite);
     }
 
@@ -827,7 +824,7 @@ void editArea::rotate_right()
 {
     //----------------------------------------
     m_edit_mode->m_f_new_sprite = false;
-    m_edit_mode->BackupSprite();
+    m_edit_mode->SaveState();
 
     m_edit_mode->m_sprite = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, TRUE, 8, 64, 64);
     m_edit_mode->m_sprite->add_alpha(true,0,0,0);
@@ -839,7 +836,6 @@ void editArea::rotate_right()
     if (m_edit_mode->m_f_new_sprite){
         m_edit_mode->m_nbHPixels = m_edit_mode->m_sprite->get_width();
         m_edit_mode->m_nbVPixels = m_edit_mode->m_sprite->get_height();
-        m_edit_mode->m_sprite_bak = m_edit_mode->m_sprite->copy();
         //m_signal_new_sprite.emit(m_edit_mode->m_sprite);
     }
 }
