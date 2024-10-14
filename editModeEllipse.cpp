@@ -1,5 +1,6 @@
 #include "editModeEllipse.h"
 #include <iostream>
+#include <utility>
 
 editModeEllipse::editModeEllipse()
     : editMode(), m_start_pt(NULL), m_end_pt(NULL), m_select_handle(NULL) {
@@ -37,7 +38,7 @@ bool editModeEllipse::on_button_press_event(GdkEventButton *event) {
     int tmy = event->y - m_origin_y;
     if (event->button == 1) {
 
-        if (m_select_handle = HitHandle(tmx, tmy)) {
+        if ((m_select_handle = HitHandle(tmx, tmy))!=NULL) {
             std::cout << "editModeRect:Hit Handle" << std::endl;
             return false;
         } else {
@@ -85,14 +86,10 @@ bool editModeEllipse::on_button_release_event(GdkEventButton *event) {
     //-- Normalize le rectangle de sélection
     if (!m_rect_current_pix.IsNULL()) {
         if (m_x1 > m_x2) {
-            int dum = m_x1;
-            m_x1 = m_x2;
-            m_x2 = dum;
+            std::swap<int>(m_x1,m_x2);
         }
         if (m_y1 > m_y2) {
-            int dum = m_y1;
-            m_y1 = m_y2;
-            m_y2 = dum;
+            std::swap<int>(m_y1,m_y2);
         }
         int startX, startY;
         int endX, endY;
@@ -214,17 +211,12 @@ void editModeEllipse::FillEllipse(Glib::RefPtr<Gdk::Pixbuf> pixbuf, int left,
 void editModeEllipse::DrawFillEllipse(Glib::RefPtr<Gdk::Pixbuf> pixbuf,
                                       int startX, int startY, int endX,
                                       int endY, guint32 col) {
-    int dum;
     //----------------------------------------------------------------------
     if (endX < startX) {
-        dum = startX;
-        startX = endX;
-        endX = dum;
+        std::swap<int>(startX,endX);
     }
     if (endY < startY) {
-        dum = startY;
-        startY = endY;
-        endY = dum;
+        std::swap<int>(startY,endY);
     }
     if ((endX != startX) || (endY != startY)) {
         FillEllipse(pixbuf, startX, startY, endX, endY, col);
@@ -325,17 +317,12 @@ void editModeEllipse::BorderEllipse(Glib::RefPtr<Gdk::Pixbuf> pixbuf, int left,
 void editModeEllipse::DrawEllipse(Glib::RefPtr<Gdk::Pixbuf> pixbuf,
                                       int startX, int startY, int endX,
                                       int endY, guint32 col) {
-    int dum;
     //----------------------------------------------------------------------
     if (endX < startX) {
-        dum = startX;
-        startX = endX;
-        endX = dum;
+        std::swap<int>(startX,endX);
     }
     if (endY < startY) {
-        dum = startY;
-        startY = endY;
-        endY = dum;
+        std::swap<int>(startY,endY);
     }
     if ((endX != startX) || (endY != startY)) {
         BorderEllipse(pixbuf, startX, startY, endX, endY, col);

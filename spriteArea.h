@@ -34,7 +34,7 @@ class spriteArea : public Gtk::Widget
 		Glib::ustring 				GetSpriteName();
 		void 						SetSpriteName(Glib::ustring name);
         bool                        CreateNewSprite();
-        bool                        CreateNewSprite1();
+        //bool                        CreateNewSprite1();
 
         void    on_sprite_modified();
 

@@ -456,73 +456,73 @@ bool spriteArea::CreateNewSprite()
 }
 
 
-bool spriteArea::CreateNewSprite1()
-{
-   	int widthSprite, heightSprite;
-    //---------------------------------------------------------
-    Gtk::Dialog dlg("New Sprite");
-    dlg.set_transient_for(*(app->get_active_window()));
-    dlg.set_default_size( 256, 128);
+// bool spriteArea::CreateNewSprite1()
+// {
+//    	int widthSprite, heightSprite;
+//     //---------------------------------------------------------
+//     Gtk::Dialog dlg("New Sprite");
+//     dlg.set_transient_for(*(app->get_active_window()));
+//     dlg.set_default_size( 256, 128);
   
-    Gtk::Button *button;
-    button = new Gtk::Button(Gtk::Stock::OK);
-    button->show(); 
-    dlg.add_action_widget(*button,Gtk::RESPONSE_OK);
-    button = new Gtk::Button(Gtk::Stock::CANCEL);
-    button->show(); 
-    dlg.add_action_widget(*button,Gtk::RESPONSE_CANCEL);
+//     Gtk::Button *button;
+//     button = new Gtk::Button(Gtk::Stock::OK);
+//     button->show(); 
+//     dlg.add_action_widget(*button,Gtk::RESPONSE_OK);
+//     button = new Gtk::Button(Gtk::Stock::CANCEL);
+//     button->show(); 
+//     dlg.add_action_widget(*button,Gtk::RESPONSE_CANCEL);
 
-    Gtk::Label *label;
-    Gtk::VBox   vbox1;
+//     Gtk::Label *label;
+//     Gtk::VBox   vbox1;
 
-    Gtk::HBox   hbox1;
-    label = new Gtk::Label("Width ");
-    Gtk::Entry *widthEntry = new Gtk::Entry();
-    widthEntry->set_text("32");
-    widthEntry->set_width_chars(5);
-    hbox1.pack_start(*label,Gtk::PACK_EXPAND_WIDGET,16);    
-    hbox1.pack_end(*widthEntry,Gtk::PACK_SHRINK,16);
-    vbox1.pack_start(hbox1,Gtk::PACK_SHRINK);
+//     Gtk::HBox   hbox1;
+//     label = new Gtk::Label("Width ");
+//     Gtk::Entry *widthEntry = new Gtk::Entry();
+//     widthEntry->set_text("32");
+//     widthEntry->set_width_chars(5);
+//     hbox1.pack_start(*label,Gtk::PACK_EXPAND_WIDGET,16);    
+//     hbox1.pack_end(*widthEntry,Gtk::PACK_SHRINK,16);
+//     vbox1.pack_start(hbox1,Gtk::PACK_SHRINK);
 
-    Gtk::HBox   hbox2;
-    label = new Gtk::Label("Height ");
-    Gtk::Entry *heightEntry = new Gtk::Entry();
-    heightEntry->set_text("32");
-    heightEntry->set_width_chars(5);
-    hbox2.pack_start(*label,Gtk::PACK_EXPAND_WIDGET,16);
-    hbox2.pack_end(*heightEntry,Gtk::PACK_SHRINK,16);
-    vbox1.pack_start(hbox2,Gtk::PACK_SHRINK,10);
+//     Gtk::HBox   hbox2;
+//     label = new Gtk::Label("Height ");
+//     Gtk::Entry *heightEntry = new Gtk::Entry();
+//     heightEntry->set_text("32");
+//     heightEntry->set_width_chars(5);
+//     hbox2.pack_start(*label,Gtk::PACK_EXPAND_WIDGET,16);
+//     hbox2.pack_end(*heightEntry,Gtk::PACK_SHRINK,16);
+//     vbox1.pack_start(hbox2,Gtk::PACK_SHRINK,10);
 
-    vbox1.show_all_children();
-    vbox1.show_all();
-    dlg.get_content_area()->pack_start(vbox1,Gtk::PACK_SHRINK,8);
+//     vbox1.show_all_children();
+//     vbox1.show_all();
+//     dlg.get_content_area()->pack_start(vbox1,Gtk::PACK_SHRINK,8);
 
-    int result = dlg.run();
-    switch(result){
-    case Gtk::RESPONSE_OK:
-        {
-            std::cout << "RESPONSE OK" << std::endl;
-            widthSprite = atoi(widthEntry->get_text().c_str());
-            heightSprite = atoi(heightEntry->get_text().c_str());
-            SetSpriteName("");
-            Glib::RefPtr<Gdk::Pixbuf> sprite = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, TRUE, 8, widthSprite, heightSprite);
-            sprite->fill(0x00000000);
-            SetSprite(sprite);
-			//-- Markage pour faire la sauvegarde
-			m_liste_modif_flags[m_id_select] = true;
-			return true;
-        }
-        break;
-    case Gtk::RESPONSE_CANCEL:
-		{
-			std::cout << "RESPONSE CANCEL" << std::endl;
-		}
-        break;
-    }
+//     int result = dlg.run();
+//     switch(result){
+//     case Gtk::RESPONSE_OK:
+//         {
+//             std::cout << "RESPONSE OK" << std::endl;
+//             widthSprite = atoi(widthEntry->get_text().c_str());
+//             heightSprite = atoi(heightEntry->get_text().c_str());
+//             SetSpriteName("");
+//             Glib::RefPtr<Gdk::Pixbuf> sprite = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, TRUE, 8, widthSprite, heightSprite);
+//             sprite->fill(0x00000000);
+//             SetSprite(sprite);
+// 			//-- Markage pour faire la sauvegarde
+// 			m_liste_modif_flags[m_id_select] = true;
+// 			return true;
+//         }
+//         break;
+//     case Gtk::RESPONSE_CANCEL:
+// 		{
+// 			std::cout << "RESPONSE CANCEL" << std::endl;
+// 		}
+//         break;
+//     }
 
-	return false;
+// 	return false;
 
-}
+// }
 
 bool spriteArea::on_timeout(int timer_number)
 {
