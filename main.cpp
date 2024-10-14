@@ -12,12 +12,15 @@
 #define GTK_STYLE_PROVIDER_PRIORITY_APPLICATION 600
 
 Glib::RefPtr<myApplication>  app;
+Glib::RefPtr<Gtk::Builder> builder;
 
 int main (int argc, char *argv[])
 {
   //------------------------------------------------------------------      
   //app = Gtk::Application::create(argc, argv, "org.gtkmm.example");
   app = myApplication::create();
+
+  builder = Gtk::Builder::create_from_resource("/res/gtkspriteed.glade");
 
   //--
   //Glib::RefPtr<Gtk::CssProvider> cssProvider = Gtk::CssProvider::create();

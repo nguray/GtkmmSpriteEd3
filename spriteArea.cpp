@@ -4,10 +4,13 @@
 #include <fstream>
 
 extern Glib::RefPtr<Gtk::Application>   app;
+extern Glib::RefPtr<Gtk::Builder> 		builder;
+
 
 spriteArea::spriteArea():Glib::ObjectBase("mySpriteArea"),Gtk::Widget(),
     m_cellSize(64),m_nbCells(8),m_top(0),m_bottom(0),m_left(0), m_right(0),
     m_sprite_width(32),m_sprite_height(32),m_id_select(0),m_i_sequence(-1),
+	m_newSpriteDlg(NULL),
 	m_move_up_item(NULL),m_move_down_item(NULL),
 	m_delete_item(NULL),m_Menu_Popup(NULL)
 {
@@ -395,7 +398,7 @@ void spriteArea::SetSpriteName(Glib::ustring name)
 
 spriteArea::type_signal_sprite_pick spriteArea::signal_sprite_pick()
 {
-    //------------------------------------------------
+    //---------------------------------------------------------
     return m_signal_sprite_pick;
 
 }
@@ -403,15 +406,68 @@ spriteArea::type_signal_sprite_pick spriteArea::signal_sprite_pick()
 bool spriteArea::CreateNewSprite()
 {
    	int widthSprite, heightSprite;
-    //------------------------------------------------------------
+    //---------------------------------------------------------
+
+	if (m_newSpriteDlg==NULL){
+		builder->get_widget("NewSpriteDlg",m_newSpriteDlg);
+		m_newSpriteDlg->set_transient_for(*(app->get_active_window()));
+
+		Gtk::Button *button;
+		button = new Gtk::Button(Gtk::Stock::OK);
+		button->show(); 
+		m_newSpriteDlg->add_action_widget(*button,Gtk::RESPONSE_OK);
+		button = new Gtk::Button(Gtk::Stock::CANCEL);
+		button->show(); 
+		m_newSpriteDlg->add_action_widget(*button,Gtk::RESPONSE_CANCEL);
+	}
+	Gtk::Entry *widthEntry;
+	Gtk::Entry *heightEntry;
+	builder->get_widget("SpriteWidth",widthEntry);
+	builder->get_widget("SpriteHeight",heightEntry);
+
+    auto result = m_newSpriteDlg->run();
+    switch(result){
+    case Gtk::RESPONSE_OK:
+		{
+			std::cout << "RESPONSE OK" << std::endl;
+            widthSprite = atoi(widthEntry->get_text().c_str());
+            heightSprite = atoi(heightEntry->get_text().c_str());
+			if (widthSprite&&heightSprite){
+				SetSpriteName("");
+				Glib::RefPtr<Gdk::Pixbuf> sprite = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, TRUE, 8, widthSprite, heightSprite);
+				sprite->fill(0x00000000);
+				SetSprite(sprite);
+				//-- Markage pour faire la sauvegarde
+				m_liste_modif_flags[m_id_select] = true;
+				m_newSpriteDlg->hide();
+				return true;
+			}
+		}
+        break;
+    case Gtk::RESPONSE_CANCEL:
+		{
+			std::cout << "RESPONSE CANCEL" << std::endl;
+		}
+        break;
+    }
+
+	m_newSpriteDlg->hide();
+	return false;
+}
+
+
+bool spriteArea::CreateNewSprite1()
+{
+   	int widthSprite, heightSprite;
+    //---------------------------------------------------------
     Gtk::Dialog dlg("New Sprite");
     dlg.set_transient_for(*(app->get_active_window()));
-    dlg.set_default_size( 320, 128);
+    dlg.set_default_size( 256, 128);
   
     Gtk::Button *button;
     button = new Gtk::Button(Gtk::Stock::OK);
     button->show(); 
-    dlg.add_action_widget(*button,Gtk::RESPONSE_OK); 		
+    dlg.add_action_widget(*button,Gtk::RESPONSE_OK);
     button = new Gtk::Button(Gtk::Stock::CANCEL);
     button->show(); 
     dlg.add_action_widget(*button,Gtk::RESPONSE_CANCEL);
@@ -433,7 +489,7 @@ bool spriteArea::CreateNewSprite()
     Gtk::Entry *heightEntry = new Gtk::Entry();
     heightEntry->set_text("32");
     heightEntry->set_width_chars(5);
-    hbox2.pack_start(*label,Gtk::PACK_EXPAND_WIDGET,16);    
+    hbox2.pack_start(*label,Gtk::PACK_EXPAND_WIDGET,16);
     hbox2.pack_end(*heightEntry,Gtk::PACK_SHRINK,16);
     vbox1.pack_start(hbox2,Gtk::PACK_SHRINK,10);
 
@@ -470,7 +526,7 @@ bool spriteArea::CreateNewSprite()
 
 bool spriteArea::on_timeout(int timer_number)
 {
-    //------------------------------------------------------------
+    //---------------------------------------------------------
     std::cout << "..." << std::endl;
 	do{
 		m_i_sequence++;
@@ -486,7 +542,7 @@ bool spriteArea::on_timeout(int timer_number)
 
 void spriteArea::PlaySequence()
 {
-    //------------------------------------------------------------
+    //---------------------------------------------------------
     std::cout << "Play..." << std::endl;
 
 	//-- Define slot
@@ -500,7 +556,7 @@ void spriteArea::PlaySequence()
 
 void spriteArea::PauseSequence()
 {
-    //------------------------------------------------------------
+    //----------------------------------------------------------
     std::cout << "Pause..." << std::endl;
     // Diconnect the signal handler:
     m_connection_timer.disconnect();
@@ -514,7 +570,7 @@ void spriteArea::on_menu_popup_move_up()
 	Glib::RefPtr<Gdk::Pixbuf>	tmpSprite;
 	std::string					fileName;
 	bool						modifFlag;
-    //------------------------------------------------------------
+    //----------------------------------------------------------
     std::cout << "Move Up" << std::endl;
 	int id = CoordYtoIndex(m_y_right_click);
 	if ((id>0)&&(id<m_nbCells)){
@@ -547,7 +603,7 @@ void spriteArea::on_menu_popup_move_down()
 	Glib::RefPtr<Gdk::Pixbuf>	tmpSprite;
 	std::string					fileName;
 	bool						modifFlag;
-    //------------------------------------------------------------
+    //----------------------------------------------------------
     std::cout << "Move Down" << std::endl;
 	int id = CoordYtoIndex(m_y_right_click);
 	if ((id>=0)&&(id<(m_nbCells-1))){
@@ -580,7 +636,7 @@ void spriteArea::SaveSpritesProj(std::string pathName,std::string fileName)
 	std::string		strName;
 	std::string		noSuffixeProjectName;
 	std::string		fullPathName;
-    //------------------------------------------------------------
+    //----------------------------------------------------------
 	fullPathName = pathName + "/" + fileName;
     std::ofstream   f(fullPathName);
     if (f.is_open()){
@@ -653,7 +709,7 @@ void spriteArea::LoadSpritesProj(std::string fullPathName)
             			Glib::RefPtr<Gdk::Pixbuf> newSprite = Gdk::Pixbuf::create_from_file(fullPathName);
 						m_liste_names[i] = fullPathName;
 						if (!newSprite->get_has_alpha()){
-							m_liste_sprites[i] = newSprite->add_alpha(true,0,0,0);;
+							m_liste_sprites[i] = newSprite->add_alpha(true,0,0,0);
 						}else{
 							m_liste_sprites[i] = newSprite;
 						}

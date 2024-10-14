@@ -1,6 +1,14 @@
 
 #include "myApplication.h"
+#include "gdk/gdk.h"
+#include "glibmm/refptr.h"
+#include "gtkmm/builder.h"
+#include "gtkmm/filefilter.h"
+#include "gtkmm/window.h"
 #include <iostream>
+
+
+extern Glib::RefPtr<Gtk::Builder> builder;
 
 const Glib::ustring app_title = "SpriteEd2";
 
@@ -361,7 +369,7 @@ void myApplication::on_activate()
     m_iconTheme = Gtk::IconTheme::get_default();
     m_iconTheme->add_resource_path("/res");
 
-    auto builder = Gtk::Builder::create_from_resource("/res/gtkspriteed.glade");
+    //Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_resource("/res/gtkspriteed.glade");
 
     builder->get_widget("spriteedwin",m_window);
     m_window->set_default_size(640,736);
@@ -474,7 +482,12 @@ void myApplication::on_activate()
     m_palette.signal_pick_color().connect(sigc::mem_fun(m_edit_area,
                         &editArea::on_pick_color_mode) );
 
+
     m_window->show_all_children();
+    
+    // builder->get_widget("Test",m_testDlg);
+    // m_testDlg->set_transient_for(*m_window);
+    // auto response = m_testDlg->run();
 
     std::vector< Gtk::TargetEntry > targets;
     targets.push_back( Gtk::TargetEntry("text/uri-list") );

@@ -28,6 +28,8 @@ public:
     Gtk::ToolButton *m_FloodFillToolButton;
     Gtk::ToolButton *m_CurrentToolButton;
 
+    Gtk::Dialog     *m_testDlg;
+
     Gtk::Window*        m_window;
     Gtk::AboutDialog    m_Dialog;
     editArea            m_edit_area;

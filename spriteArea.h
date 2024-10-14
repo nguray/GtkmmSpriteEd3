@@ -25,6 +25,8 @@ class spriteArea : public Gtk::Widget
         Glib::RefPtr<Gdk::Pixbuf> m_liste_sprites[8];
 		Glib::ustring 	m_liste_names[8];
 		bool			m_liste_modif_flags[8];
+        Gtk::Dialog     *m_newSpriteDlg;
+
 
         int     CoordYtoIndex(int y);
 		void 	SetSprite(Glib::RefPtr<Gdk::Pixbuf> newSprite);
@@ -32,6 +34,7 @@ class spriteArea : public Gtk::Widget
 		Glib::ustring 				GetSpriteName();
 		void 						SetSpriteName(Glib::ustring name);
         bool                        CreateNewSprite();
+        bool                        CreateNewSprite1();
 
         void    on_sprite_modified();
 
