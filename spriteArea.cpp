@@ -1,4 +1,6 @@
 #include "spriteArea.h"
+#include <cstddef>
+#include <memory>
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
@@ -6,6 +8,16 @@
 extern Glib::RefPtr<Gtk::Application>   app;
 extern Glib::RefPtr<Gtk::Builder> 		builder;
 
+
+sprite::sprite():m_f_modif(false),m_image(),m_name("")
+{
+
+}
+
+sprite::~sprite()
+{
+	m_states.clear();
+}
 
 spriteArea::spriteArea():Glib::ObjectBase("mySpriteArea"),Gtk::Widget(),
     m_cellSize(64),m_nbCells(8),m_top(0),m_bottom(0),m_left(0), m_right(0),
@@ -19,18 +31,18 @@ spriteArea::spriteArea():Glib::ObjectBase("mySpriteArea"),Gtk::Widget(),
 
 	try
 	{
-		m_liste_sprites[0] = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, TRUE, 8, 32, 32);
-		m_liste_sprites[0]->fill(0x00000000);
+
+		auto spr = std::make_shared<sprite>();
+		spr->m_image = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, TRUE, 8, 32, 32);
+		spr->m_image->fill(0x00000000);
+		m_liste_sprites[0] = spr;
+
 	}
 	catch(const std::exception& e)
 	{
 		std::cerr << e.what() << '\n';
 	}
 	
-
-	for (int i=0;i<m_nbCells;i++){
-		m_liste_modif_flags[i] = false;
-	}
 
 	//Fill popup menu:
 	//m_move_up_item = Gtk::make_managed<Gtk::MenuItem>("Move Up", true);
@@ -219,11 +231,11 @@ bool spriteArea::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	{
 		if (auto sprite=m_liste_sprites[i])
 		{
-			auto w = sprite->get_width();
-			auto h = sprite->get_height();
+			auto w = sprite->m_image->get_width();
+			auto h = sprite->m_image->get_height();
 			x = (m_left + m_right) / 2 - (w / 2);
 			y = i * m_cellSize + m_cellSize / 2 - (h / 2);
-			Gdk::Cairo::set_source_pixbuf(cr, m_liste_sprites[i], x, y);
+			Gdk::Cairo::set_source_pixbuf(cr, sprite->m_image, x, y);
 			cr->paint();
 		}
 	}
@@ -233,11 +245,11 @@ bool spriteArea::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		if ( auto sprite=m_liste_sprites[m_i_sequence]){
 			int left = 0;
 			int right = m_cellSize;
-			auto w = sprite->get_width();
-			auto h = sprite->get_height();
+			auto w = sprite->m_image->get_width();
+			auto h = sprite->m_image->get_height();
 			x = (left + right) / 2 - (w / 2);
 			y = m_nbCells * m_cellSize + m_cellSize / 2 - (h / 2);
-			Gdk::Cairo::set_source_pixbuf(cr, sprite, x, y);
+			Gdk::Cairo::set_source_pixbuf(cr, sprite->m_image, x, y);
 			cr->paint();
 			//-- Draw sequence mark
 			int top = m_i_sequence * m_cellSize;
@@ -320,7 +332,7 @@ bool spriteArea::on_button_press_event(GdkEventButton *event)
 			}else{
 				m_id_select = id;
 			}
-			m_signal_sprite_pick.emit(m_liste_sprites[id]);
+			m_signal_sprite_pick.emit(m_liste_sprites[id]->m_image);
 		}
 
 	}else if (event->button == 3){
@@ -357,7 +369,7 @@ bool spriteArea::on_button_press_event(GdkEventButton *event)
 void spriteArea::on_sprite_modified()
 {
 	//--------------------------------------------------------
-	m_liste_modif_flags[m_id_select] = true;
+	m_liste_sprites[m_id_select]->m_f_modif = true;
 	m_refGdkWindow->invalidate(true);
 }
 
@@ -365,35 +377,37 @@ void spriteArea::SetSprite(Glib::RefPtr<Gdk::Pixbuf> newSprite)
 {
 	//--------------------------------------------------------
 	if ((m_id_select>=0)&&(m_id_select<m_nbCells)){
-		if (!newSprite->get_has_alpha()){
-			m_liste_sprites[m_id_select] = newSprite->add_alpha(true,0,0,0); // RGBA
-		}else{
-			m_liste_sprites[m_id_select] = newSprite;
+		auto spr = std::make_shared<sprite>(); 
+		if (spr){
+			if (!newSprite->get_has_alpha()){
+				newSprite->add_alpha(true,0,0,0); // RGBA
+			}
+			spr->m_image = newSprite;
+			m_liste_sprites[m_id_select] = spr;
+			m_sprite_width  = newSprite->get_width();
+			m_sprite_height = newSprite->get_height();
+			m_refGdkWindow->invalidate(true);
+			m_signal_sprite_pick.emit(spr->m_image);
 		}
-        m_sprite_width  = newSprite->get_width();
-        m_sprite_height = newSprite->get_height();
-		m_refGdkWindow->invalidate(true);
-		m_signal_sprite_pick.emit(m_liste_sprites[m_id_select]);
-
 	}
 
 }
 
-Glib::RefPtr<Gdk::Pixbuf> spriteArea::GetSprite()
+Glib::RefPtr<Gdk::Pixbuf> spriteArea::GetCurSprite()
 {
 	//--------------------------------------------------------
-	return m_liste_sprites[m_id_select];
+	return m_liste_sprites[m_id_select]->m_image;
 
 }
 
-Glib::ustring spriteArea::GetSpriteName()
+Glib::ustring spriteArea::GetCurSpriteName()
 {
-	return m_liste_names[m_id_select];
+	return m_liste_sprites[m_id_select]->m_name;
 }
 
-void spriteArea::SetSpriteName(Glib::ustring name)
+void spriteArea::SetCurSpriteName(Glib::ustring name)
 {
-	m_liste_names[m_id_select] = name;
+	m_liste_sprites[m_id_select]->m_name = name;
 }
 
 spriteArea::type_signal_sprite_pick spriteArea::signal_sprite_pick()
@@ -433,12 +447,12 @@ bool spriteArea::CreateNewSprite()
             widthSprite = atoi(widthEntry->get_text().c_str());
             heightSprite = atoi(heightEntry->get_text().c_str());
 			if (widthSprite&&heightSprite){
-				SetSpriteName("");
 				Glib::RefPtr<Gdk::Pixbuf> sprite = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, TRUE, 8, widthSprite, heightSprite);
 				sprite->fill(0x00000000);
 				SetSprite(sprite);
 				//-- Markage pour faire la sauvegarde
-				m_liste_modif_flags[m_id_select] = true;
+				m_liste_sprites[m_id_select]->m_name = "";
+				m_liste_sprites[m_id_select]->m_f_modif = true;
 				m_newSpriteDlg->hide();
 				return true;
 			}
@@ -567,7 +581,7 @@ void spriteArea::PauseSequence()
 
 void spriteArea::on_menu_popup_move_up()
 {
-	Glib::RefPtr<Gdk::Pixbuf>	tmpSprite;
+	std::shared_ptr<sprite>		tmpSprite;
 	std::string					fileName;
 	bool						modifFlag;
     //----------------------------------------------------------
@@ -579,14 +593,6 @@ void spriteArea::on_menu_popup_move_up()
 		tmpSprite = m_liste_sprites[idPrec];
 		m_liste_sprites[idPrec] = m_liste_sprites[id];
 		m_liste_sprites[id] = tmpSprite;
-		//--
-		fileName = m_liste_names[idPrec];
-		m_liste_names[idPrec] = m_liste_names[id];
-		m_liste_names[id] = fileName;
-		//--
-		modifFlag = m_liste_modif_flags[idPrec];
-		m_liste_modif_flags[idPrec] = m_liste_modif_flags[id];
-		m_liste_modif_flags[id] = modifFlag;
 
 		if (id==m_id_select){
 			m_id_select = idPrec;
@@ -600,7 +606,7 @@ void spriteArea::on_menu_popup_move_up()
 
 void spriteArea::on_menu_popup_move_down()
 {
-	Glib::RefPtr<Gdk::Pixbuf>	tmpSprite;
+	std::shared_ptr<sprite>		tmpSprite;
 	std::string					fileName;
 	bool						modifFlag;
     //----------------------------------------------------------
@@ -612,14 +618,6 @@ void spriteArea::on_menu_popup_move_down()
 		tmpSprite = m_liste_sprites[idSuiv];
 		m_liste_sprites[idSuiv] = m_liste_sprites[id];
 		m_liste_sprites[id] = tmpSprite;
-		//--
-		fileName = m_liste_names[idSuiv];
-		m_liste_names[idSuiv] = m_liste_names[id];
-		m_liste_names[id] = fileName;
-		//--
-		modifFlag = m_liste_modif_flags[idSuiv];
-		m_liste_modif_flags[idSuiv] = m_liste_modif_flags[id];
-		m_liste_modif_flags[id] = modifFlag;
 
 		if (id==m_id_select){
 			m_id_select = idSuiv;
@@ -647,17 +645,17 @@ void spriteArea::SaveSpritesProj(std::string pathName,std::string fileName)
 		}
 		//--
 		for(int i=0;i<m_nbCells;i++){
-			if (m_liste_sprites[i]){
-				strName = m_liste_names[i];
+			if (auto spr =m_liste_sprites[i]){
+				strName = spr->m_name;
 				if (strName==""){
 					spriteName = noSuffixeProjectName + "_" + std::to_string(i) + ".png";
 				}else{
   					std::size_t found = strName.find_last_of("/\\");
 					spriteName = strName.substr(found+1);
 				}
-				if (m_liste_modif_flags[i]){
+				if (spr->m_f_modif){
 					fullPathName = pathName + "/" + spriteName;
-            		m_liste_sprites[i]->save(fullPathName, "png");
+            		spr->m_image->save(fullPathName, "png");
 				}
 			}else{
 				spriteName = "NULL";
@@ -682,8 +680,8 @@ void spriteArea::LoadSpritesProj(std::string fullPathName)
 		//-- Effacer la liste
 		for( i=0; i<m_nbCells; i++){
 			m_liste_sprites[i].reset();
-			m_liste_names[i] = "";
-			m_liste_modif_flags[i] = false;
+			m_liste_sprites[i]->m_name = "";
+			m_liste_sprites[i]->m_f_modif = false;
 		}
 		//--
   		std::size_t found = fullPathName.find_last_of("/\\");
@@ -707,14 +705,20 @@ void spriteArea::LoadSpritesProj(std::string fullPathName)
 					if (strWord!="NULL"){
 						fullPathName = pathName + "/" + strWord;
             			Glib::RefPtr<Gdk::Pixbuf> newSprite = Gdk::Pixbuf::create_from_file(fullPathName);
-						m_liste_names[i] = fullPathName;
-						if (!newSprite->get_has_alpha()){
-							m_liste_sprites[i] = newSprite->add_alpha(true,0,0,0);
-						}else{
-							m_liste_sprites[i] = newSprite;
-						}
-						if (id_sel_sprite==-1){
-							id_sel_sprite = i;
+
+						if (newSprite){
+
+							auto spr = std::make_shared<sprite>();
+							if (spr){
+								spr->m_name = fullPathName;
+								if (!newSprite->get_has_alpha()){
+									newSprite->add_alpha(true,0,0,0);
+								}
+								m_liste_sprites[i] = spr;
+							}
+							if (id_sel_sprite==-1){
+								id_sel_sprite = i;
+							}
 						}
 					}
 					//--
@@ -732,11 +736,10 @@ void spriteArea::LoadSpritesProj(std::string fullPathName)
 		}else{
 			m_id_select = id_sel_sprite;
 		}
-		if (m_liste_sprites[m_id_select]){
-			Glib::RefPtr<Gdk::Pixbuf> sprite = m_liste_sprites[m_id_select];
-			m_signal_sprite_pick.emit(sprite);
-			m_sprite_width  = sprite->get_width();
-			m_sprite_height = sprite->get_height();
+		if (auto spr=m_liste_sprites[m_id_select]){
+			m_signal_sprite_pick.emit(spr->m_image);
+			m_sprite_width  = spr->m_image->get_width();
+			m_sprite_height = spr->m_image->get_height();
 		}
 		m_refGdkWindow->invalidate(true);
     }
@@ -750,18 +753,23 @@ void spriteArea::InitSprites()
 	//-- Effacer la liste
 	for(int i=0; i<m_nbCells; i++){
 		m_liste_sprites[i].reset();
-		m_liste_modif_flags[i] = false;
-		m_liste_names[i] = "";
 	}
 	m_id_select = 0;
 	try
 	{
-		m_liste_sprites[0] = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, TRUE, 8, 32, 32);
-		m_liste_sprites[0]->fill(0x00000000);
-		m_sprite_width  = m_liste_sprites[0]->get_width();
-		m_sprite_height = m_liste_sprites[0]->get_height();
-		m_signal_sprite_pick.emit(m_liste_sprites[0]);
-		m_refGdkWindow->invalidate(true);
+		auto spr = std::make_shared<sprite>();
+
+		if (spr){
+			auto img = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, TRUE, 8, 32, 32);
+			img->fill(0x00000000);
+			m_sprite_width  = img->get_width();
+			m_sprite_height = img->get_height();
+			spr->m_image = img;
+			m_liste_sprites[0] = spr;
+			m_signal_sprite_pick.emit(spr->m_image);
+			m_refGdkWindow->invalidate(true);
+		}
+
 	}
 	catch(const std::exception& e)
 	{
@@ -798,7 +806,7 @@ void spriteArea::on_menu_popup_delete()
 
 		Gtk::VBox   vbox1;
 		Gtk::Label	*label;
-		fileName = Glib::path_get_basename(m_liste_names[id]);
+		fileName = Glib::path_get_basename(m_liste_sprites[id]->m_name);
 		msg = "Choose Remove to remove : " + fileName;
 		label = new Gtk::Label(msg);
 		vbox1.pack_start(*label,Gtk::PACK_SHRINK);
@@ -816,8 +824,8 @@ void spriteArea::on_menu_popup_delete()
 		case ID_REMOVE:
 			{
 				std::cout << "RESPONSE Remove" << std::endl;
-				m_liste_names[id] = "";
-				m_liste_modif_flags[id] = false;
+				m_liste_sprites[id]->m_name = "";
+				m_liste_sprites[id]->m_f_modif = false;
 				m_liste_sprites[id].reset();
 				m_refGdkWindow->invalidate(true);
 
@@ -826,12 +834,12 @@ void spriteArea::on_menu_popup_delete()
 		case ID_DELETE:
 			{
 				std::cout << "RESPONSE Delete" << std::endl;
-				fileName = m_liste_names[id];
+				fileName = m_liste_sprites[id]->m_name;
   				if( remove( fileName.c_str() ) != 0 ){
 					std::cout << "Error deleting " << fileName << std::endl;
   				}
-				m_liste_names[id] = "";
-				m_liste_modif_flags[id] = false;
+				m_liste_sprites[id]->m_name = "";
+				m_liste_sprites[id]->m_f_modif = false;
 				m_liste_sprites[id].reset();
 				m_refGdkWindow->invalidate(true);
 

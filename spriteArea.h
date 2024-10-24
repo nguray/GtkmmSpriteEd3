@@ -1,7 +1,21 @@
 #pragma once
 
+#include "glibmm/ustring.h"
 #include <gtkmm.h>
+#include <memory>
 #include <vector>
+
+class sprite {
+public:
+    sprite();
+    ~sprite();
+
+    bool            m_f_modif;
+    Glib::ustring   m_name;
+    Glib::RefPtr<Gdk::Pixbuf> m_image;
+    std::vector<Glib::RefPtr<Gdk::Pixbuf>> m_states;
+
+};
 
 class spriteArea : public Gtk::Widget
 {
@@ -22,17 +36,15 @@ class spriteArea : public Gtk::Widget
         int     m_sprite_height;
         int     m_id_select;
 
-        Glib::RefPtr<Gdk::Pixbuf> m_liste_sprites[8];
-		Glib::ustring 	m_liste_names[8];
-		bool			m_liste_modif_flags[8];
+        std::shared_ptr<sprite> m_liste_sprites[8];
         Gtk::Dialog     *m_newSpriteDlg;
 
 
         int     CoordYtoIndex(int y);
 		void 	SetSprite(Glib::RefPtr<Gdk::Pixbuf> newSprite);
-		Glib::RefPtr<Gdk::Pixbuf>	GetSprite();
-		Glib::ustring 				GetSpriteName();
-		void 						SetSpriteName(Glib::ustring name);
+		Glib::RefPtr<Gdk::Pixbuf>	GetCurSprite();
+		Glib::ustring 				GetCurSpriteName();
+		void 						SetCurSpriteName(Glib::ustring name);
         bool                        CreateNewSprite();
         //bool                        CreateNewSprite1();
 

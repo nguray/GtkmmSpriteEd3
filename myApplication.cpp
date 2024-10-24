@@ -154,7 +154,7 @@ void myApplication::on_menu_open()
             file_name = dlg.get_filename();
             Glib::RefPtr<Gdk::Pixbuf> pixBuf = Gdk::Pixbuf::create_from_file(file_name);
             m_sprite_area.SetSprite(pixBuf);
-            m_sprite_area.SetSpriteName(file_name);
+            m_sprite_area.SetCurSpriteName(file_name);
             name = "SpriteEd2 : " + Glib::path_get_basename( dlg.get_filename());
             m_window->set_title(name.c_str());
         }
@@ -172,7 +172,7 @@ void myApplication::on_menu_file_save()
 {
     Glib::ustring file_name;
     //------------------------------------------------------------
-    file_name = m_sprite_area.GetSpriteName();
+    file_name = m_sprite_area.GetCurSpriteName();
     if (!file_name.empty())
     {
         Glib::RefPtr<Gdk::Pixbuf> pixBuf = m_edit_area.GetSprite();
@@ -216,7 +216,7 @@ void myApplication::on_menu_file_save_as()
         {
             Glib::ustring name;
             Glib::ustring file_name = dlg.get_filename();
-            Glib::RefPtr<Gdk::Pixbuf> pixBuf = m_sprite_area.GetSprite();
+            Glib::RefPtr<Gdk::Pixbuf> pixBuf = m_sprite_area.GetCurSprite();
             Glib::ustring tmpstr = file_name.uppercase();
             if (tmpstr.find_last_of(".PNG") == Glib::ustring::npos)
             {
@@ -226,7 +226,7 @@ void myApplication::on_menu_file_save_as()
             //--
             name = app_title + " : " + Glib::path_get_basename(file_name);
             m_window->set_title(name);
-            m_sprite_area.SetSpriteName(file_name);
+            m_sprite_area.SetCurSpriteName(file_name);
 
         }
         break;
@@ -327,7 +327,7 @@ void myApplication::on_set_edit_sprite(Glib::RefPtr<Gdk::Pixbuf> sprite)
 {
     Glib::ustring name;
     //------------------------------------------------------------
-    Glib::ustring file_name = m_sprite_area.GetSpriteName();
+    Glib::ustring file_name = m_sprite_area.GetCurSpriteName();
     if (!file_name.empty()){
         name = "SpriteEd2 : " + Glib::path_get_basename( file_name);
     }else{
@@ -352,7 +352,7 @@ void myApplication::on_drop_drag_data_received(
             if (Glib::str_has_suffix(filenamepath,"png")){
                 Glib::RefPtr<Gdk::Pixbuf> pixBuf = Gdk::Pixbuf::create_from_file(filenamepath);
                 m_sprite_area.SetSprite(pixBuf);
-                m_sprite_area.SetSpriteName(filenamepath);
+                m_sprite_area.SetCurSpriteName(filenamepath);
                 //std::cout << "Received \"" << filenamepath << "\" in EditArea " << std::endl;
             }
         }
@@ -474,7 +474,7 @@ void myApplication::on_activate()
     m_edit_area.m_edit_mode->signal_new_sprite().connect(sigc::mem_fun(m_sprite_area,
                      &spriteArea::on_new_sprite) );
 
-    m_edit_area.SetSprite(m_sprite_area.m_liste_sprites[0]);
+    m_edit_area.SetSprite(m_sprite_area.m_liste_sprites[0]->m_image);
 
     m_sprite_area.signal_sprite_pick().connect(sigc::mem_fun(this,
                         &myApplication::on_set_edit_sprite) );
