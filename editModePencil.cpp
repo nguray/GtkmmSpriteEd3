@@ -1,3 +1,4 @@
+#include "editArea.h"
 #include "editModePencil.h"
 #include <iostream>
 #include <gdkmm/color.h>
@@ -14,7 +15,7 @@ editModePencil::~editModePencil()
     
 }
 
-bool editModePencil::on_button_press_event(GdkEventButton *event)
+bool editModePencil::on_button_press_event(Gtk::Widget *w, GdkEventButton *event)
 {
     int         x,y;
     guint8      r,g,b,a;
@@ -33,7 +34,10 @@ bool editModePencil::on_button_press_event(GdkEventButton *event)
     }
 
     if (MouseToPixel(tmx,tmy,m_pixelX,m_pixelY)&&PtInEditArea(tmx, tmy)){
-        SaveState();
+
+        SaveStartState();
+        static_cast<editArea*>(w)->signal_save_image_state().emit();
+
         if (event->state & GDK_CONTROL_MASK){
             line( m_sprite, m_lastPixelX, m_lastPixelY, m_pixelX, m_pixelY, color);
             return true;
@@ -51,7 +55,7 @@ bool editModePencil::on_button_press_event(GdkEventButton *event)
     return false;
 }
 
-bool editModePencil::on_button_release_event(GdkEventButton *event)
+bool editModePencil::on_button_release_event(Gtk::Widget *w, GdkEventButton *event)
 {
     int         pixelX,pixelY;
    //---------------------------------------------------------
@@ -71,7 +75,7 @@ bool editModePencil::on_button_release_event(GdkEventButton *event)
     return false;
 }
 
-bool editModePencil::on_motion_notify_event(GdkEventMotion *event)
+bool editModePencil::on_motion_notify_event(Gtk::Widget *w, GdkEventMotion *event)
 {
     guint8  r,g,b,a;
     int     pixelX,pixelY;

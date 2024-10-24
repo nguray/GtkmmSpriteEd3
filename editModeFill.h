@@ -10,9 +10,9 @@ class editModeFill: public editMode
         editModeFill();
         virtual ~editModeFill();
 
-        bool    on_button_press_event(GdkEventButton *event);
-        bool    on_button_release_event(GdkEventButton *event);
-        bool    on_motion_notify_event(GdkEventMotion *event);
+        bool    on_button_press_event(Gtk::Widget *w, GdkEventButton *event) override;
+        bool    on_button_release_event(Gtk::Widget *w, GdkEventButton *event) override;
+        bool    on_motion_notify_event(Gtk::Widget *w, GdkEventMotion *event) override;
         bool    on_draw(const Cairo::RefPtr<Cairo::Context>& cr);
         void    init_mode();
 

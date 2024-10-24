@@ -441,7 +441,7 @@ bool editArea::on_button_press_event(GdkEventButton *event)
             m_edit_mode->m_start_origin_y = m_edit_mode->m_origin_y;
 
         }else{
-            if (m_edit_mode->on_button_press_event(event)){
+            if (m_edit_mode->on_button_press_event(this, event)){
                 m_refGdkWindow->invalidate(true);
 
             }
@@ -454,7 +454,7 @@ bool editArea::on_button_release_event(GdkEventButton *event)
 {
    //---------------------------------------------------------
     m_signal_sprite_modified.emit();
-    if (m_edit_mode->on_button_release_event(event)){
+    if (m_edit_mode->on_button_release_event(this, event)){
         m_refGdkWindow->invalidate(true);
     }
     return true;
@@ -476,7 +476,7 @@ bool editArea::on_motion_notify_event(GdkEventMotion *event)
             
         }else{
 
-            if (m_edit_mode->on_motion_notify_event(event)){
+            if (m_edit_mode->on_motion_notify_event(this, event)){
                 m_signal_sprite_modified.emit();
                 m_refGdkWindow->invalidate(true);
             }
@@ -593,7 +593,7 @@ void editArea::CopySelect()
             }
             m_edit_mode->FillPixBuf(m_edit_mode->m_select_pixbuf,m_edit_mode->m_rect_select_pix,m_edit_mode->m_backGroundColor);
             m_edit_mode->BlitPixBuf(m_edit_mode->m_select_pixbuf, 0, 0, m_edit_mode->m_sprite, m_edit_mode->m_rect_select_pix);
-            m_edit_mode->SaveState();
+            signal_save_image_state();
             m_edit_mode->m_rect_copy_pix = m_edit_mode->m_rect_select_pix;
             m_edit_mode->m_copy_pixbuf = m_edit_mode->m_select_pixbuf->copy();
             m_edit_mode->init_mode();
@@ -619,7 +619,7 @@ void editArea::on_image_received(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf)
 {
     //------------------------------------------------
 
-    m_edit_mode->SaveState();
+    signal_save_image_state();
 
     int w,h;
     int wi = pixbuf->get_width();
@@ -682,7 +682,7 @@ void editArea::CutSelect()
             }
             m_edit_mode->FillPixBuf(m_edit_mode->m_select_pixbuf,m_edit_mode->m_rect_select_pix,m_edit_mode->m_backGroundColor);
             m_edit_mode->BlitPixBuf(m_edit_mode->m_select_pixbuf, 0, 0, m_edit_mode->m_sprite, m_edit_mode->m_rect_select_pix);
-            m_edit_mode->SaveState();
+            signal_save_image_state();
             m_edit_mode->m_rect_copy_pix = m_edit_mode->m_rect_select_pix;
             m_edit_mode->m_copy_pixbuf = m_edit_mode->m_select_pixbuf->copy();
             m_refGdkWindow->invalidate(true);
@@ -710,9 +710,12 @@ void editArea::Undo()
 {
     //------------------------------------------------
     m_edit_mode->init_mode();
-    m_edit_mode->RestoreState();
+    signal_restore_image_state().emit();
     m_refGdkWindow->invalidate(true);
-    m_signal_sprite_modified.emit();
+    // m_edit_mode->init_mode();
+    // m_edit_mode->RestoreState();
+    // m_refGdkWindow->invalidate(true);
+    // m_signal_sprite_modified.emit();
 
 }
 
@@ -765,11 +768,11 @@ void editArea::flip_horizontaly()
     //--
     m_edit_mode->init_mode();
 
-    m_edit_mode->SaveState();
+    //m_edit_mode->SaveState();
     //priv->undo_mode = UNDO_FLIP_HORIZONTALY;
 
-    auto sprite = m_edit_mode->m_states.back();
-    m_edit_mode->flip_horizontaly(sprite,m_edit_mode->m_sprite);
+    //auto sprite = m_edit_mode->m_states.back();
+    //m_edit_mode->flip_horizontaly(sprite,m_edit_mode->m_sprite);
 
     //--
     m_refGdkWindow->invalidate(true);
@@ -785,11 +788,11 @@ void editArea::flip_verticaly()
     //--
     m_edit_mode->init_mode();
 
-    m_edit_mode->SaveState();
+    //m_edit_mode->SaveState();
     //priv->undo_mode = UNDO_FLIP_VERTICALY;
 
-    auto sprite = m_edit_mode->m_states.back();
-    m_edit_mode->flip_verticaly(sprite,m_edit_mode->m_sprite);
+    //auto sprite = m_edit_mode->m_states.back();
+    //m_edit_mode->flip_verticaly(sprite,m_edit_mode->m_sprite);
 
     //--
     m_refGdkWindow->invalidate(true);
@@ -802,7 +805,7 @@ void editArea::rotate_left()
 {
     //----------------------------------------
     m_edit_mode->m_f_new_sprite = false;
-    m_edit_mode->SaveState();
+    signal_save_image_state();
 
     m_edit_mode->m_sprite = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, TRUE, 8, 64, 64);
     m_edit_mode->m_sprite->add_alpha(true,0,0,0);
@@ -824,7 +827,7 @@ void editArea::rotate_right()
 {
     //----------------------------------------
     m_edit_mode->m_f_new_sprite = false;
-    m_edit_mode->SaveState();
+    signal_save_image_state();
 
     m_edit_mode->m_sprite = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, TRUE, 8, 64, 64);
     m_edit_mode->m_sprite->add_alpha(true,0,0,0);
@@ -839,3 +842,18 @@ void editArea::rotate_right()
         //m_signal_new_sprite.emit(m_edit_mode->m_sprite);
     }
 }
+
+editArea::type_save_image_state editArea::signal_save_image_state()
+{
+    //------------------------------------------------
+    return m_signal_save_image_state;
+
+}
+
+editArea::type_restore_image_state editArea::signal_restore_image_state()
+{
+    //------------------------------------------------
+    return m_signal_restore_image_state;
+
+}
+

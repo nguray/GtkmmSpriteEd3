@@ -474,6 +474,12 @@ void myApplication::on_activate()
     m_edit_area.m_edit_mode->signal_new_sprite().connect(sigc::mem_fun(m_sprite_area,
                      &spriteArea::on_new_sprite) );
 
+    m_edit_area.signal_save_image_state().connect(sigc::mem_fun(m_sprite_area,
+                     &spriteArea::on_save_image_state) );
+    m_edit_area.signal_restore_image_state().connect(sigc::mem_fun(m_sprite_area,
+                     &spriteArea::on_restore_image_state) );
+
+
     m_edit_area.SetSprite(m_sprite_area.m_liste_sprites[0]->m_image);
 
     m_sprite_area.signal_sprite_pick().connect(sigc::mem_fun(this,

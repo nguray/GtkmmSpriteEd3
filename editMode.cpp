@@ -29,7 +29,7 @@ RRect                       editMode::m_rect_select_pix_sav(0,0,0,0);
 bool                        editMode::m_select_move_flag = false;
 Glib::RefPtr<Gdk::Window>   editMode::m_refGdkWindow(nullptr);
 
-std::vector<Glib::RefPtr<Gdk::Pixbuf>> editMode::m_states;
+Glib::RefPtr<Gdk::Pixbuf>   editMode::m_start_state;
 
 editMode::editMode()
 {
@@ -581,49 +581,15 @@ editMode::type_signal_new_sprite editMode::signal_new_sprite()
 
 }
 
-
-void editMode::SaveState()
+void editMode::SaveStartState()
 {
-    auto sprite = m_sprite->copy();
-    m_states.push_back(sprite);
-}
-
-void editMode::RestoreState()
-{
-    if (m_states.size()){
-
-        auto oldSprite = m_states.back();
-        m_states.pop_back();
-
-        auto oldWidth = oldSprite->get_width();
-        auto oldHeight = oldSprite->get_height();
-        auto curWidth = m_sprite->get_width();
-        auto curHeight = m_sprite->get_height();
-
-        if ((oldWidth!=curWidth)||(oldHeight!=curHeight)){
-            auto bits_per_sample = m_sprite->get_bits_per_sample();
-            m_sprite = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, TRUE, bits_per_sample, oldWidth, oldHeight);
-            m_sprite->add_alpha(true,0,0,0);
-
-        }else{
-            oldSprite->copy_area( 0, 0, curWidth, curHeight, m_sprite, 0, 0);
-
-        }
-
-    }
-
+    m_start_state = m_sprite->copy();
 }
 
 void editMode::RestoreStartState()
 {
-    if (m_states.size()){
-
-        auto oldSprite = m_states.back();
-        auto sprite = m_states.back();
-        auto h = sprite->get_height();
-        auto w = sprite->get_width();
-        sprite->copy_area( 0, 0, w, h, m_sprite, 0, 0);
-
-    }
+    auto h = m_sprite->get_height();
+    auto w = m_sprite->get_width();
+    m_start_state->copy_area( 0, 0, w, h, m_sprite, 0, 0);
 
 }

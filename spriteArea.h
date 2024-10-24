@@ -64,6 +64,10 @@ class spriteArea : public Gtk::Widget
         bool    on_timeout(int timer_number);
         void    on_new_sprite(Glib::RefPtr<Gdk::Pixbuf> newSprite);
 
+        void    on_save_image_state();
+        void    on_restore_image_state();
+
+
     protected:
 
         type_signal_sprite_pick m_signal_sprite_pick;

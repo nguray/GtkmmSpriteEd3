@@ -1,3 +1,4 @@
+#include "editArea.h"
 #include "editModeSelect.h"
 #include <iostream>
 
@@ -31,7 +32,7 @@ editModeSelect::~editModeSelect() {
   }
 }
 
-bool editModeSelect::on_button_press_event(GdkEventButton *event) {
+bool editModeSelect::on_button_press_event(Gtk::Widget *w, GdkEventButton *event) {
   int pixelX, pixelY;
   int x, y;
   //---------------------------------------------------------
@@ -67,7 +68,7 @@ bool editModeSelect::on_button_press_event(GdkEventButton *event) {
   return true;
 }
 
-bool editModeSelect::on_button_release_event(GdkEventButton *event) {
+bool editModeSelect::on_button_release_event(Gtk::Widget *w, GdkEventButton *event) {
   int pixelX, pixelY;
   //---------------------------------------------------------
   std::cout << "editModePencil:on_button_release_event" << std::endl;
@@ -128,7 +129,7 @@ RHandle *editModeSelect::HitHandle(int mx, int my) {
 }
 
 
-bool editModeSelect::on_motion_notify_event(GdkEventMotion *event) {
+bool editModeSelect::on_motion_notify_event(Gtk::Widget *w, GdkEventMotion *event) {
   int pixelX, pixelY;
   guint32 color;
   //---------------------------------------------------------

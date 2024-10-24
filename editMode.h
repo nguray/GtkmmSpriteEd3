@@ -10,9 +10,7 @@ public:
 
     typedef sigc::signal<void, Glib::RefPtr<Gdk::Pixbuf>> type_signal_new_sprite;
     type_signal_new_sprite signal_new_sprite();
-
     type_signal_new_sprite      m_signal_new_sprite;
-
 
     editMode();
     virtual ~editMode();
@@ -44,11 +42,10 @@ public:
     static RRect                       m_rect_select_pix_sav;
     static Glib::RefPtr<Gdk::Window>   m_refGdkWindow;
 
-    static std::vector<Glib::RefPtr<Gdk::Pixbuf>> m_states;
+    static Glib::RefPtr<Gdk::Pixbuf>   m_start_state;
 
 
-    void    SaveState();
-    void    RestoreState();
+    void    SaveStartState();
     void    RestoreStartState();
 
     bool    MouseToPixel(int mx,int my,int &pixelX,int &pixelY);
@@ -76,9 +73,9 @@ public:
     static RRect   m_rect_select_pix;
     static bool    m_select_move_flag;
 
-    virtual bool on_button_press_event(GdkEventButton *event)=0;
-    virtual bool on_button_release_event(GdkEventButton *event)=0;
-    virtual bool on_motion_notify_event(GdkEventMotion *event)=0;
+    virtual bool on_button_press_event(Gtk::Widget *w, GdkEventButton *event)=0;
+    virtual bool on_button_release_event(Gtk::Widget *w, GdkEventButton *event)=0;
+    virtual bool on_motion_notify_event(Gtk::Widget *w, GdkEventMotion *event)=0;
     virtual bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr)=0;
     virtual void init_mode()=0;
 

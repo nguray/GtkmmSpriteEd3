@@ -1,4 +1,6 @@
 #include "spriteArea.h"
+#include "gdkmm/pixbuf.h"
+#include "glibmm/refptr.h"
 #include <cstddef>
 #include <memory>
 #include <stdio.h>
@@ -862,4 +864,48 @@ void spriteArea::on_new_sprite(Glib::RefPtr<Gdk::Pixbuf> newSprite)
 	//--------------------------------------------
 	SetSprite( newSprite);
 	m_refGdkWindow->invalidate(true);
+}
+
+void spriteArea::on_save_image_state()
+{
+	//--------------------------------------------
+	std::cout << "Save image state" << std::endl;
+	if (auto spr = m_liste_sprites[m_id_select]){
+		spr->m_states.push_back(spr->m_image->copy());
+	}
+
+}
+
+void spriteArea::on_restore_image_state()
+{
+	//--------------------------------------------
+	std::cout << "Restore image state" << std::endl;
+	if (auto spr = m_liste_sprites[m_id_select]){
+
+		if (spr->m_states.size()){
+			auto oldImg = spr->m_states.back();
+			spr->m_states.pop_back();
+
+			auto oldWidth = oldImg->get_width();
+			auto oldHeight = oldImg->get_height();
+			auto curWidth = spr->m_image->get_width();
+			auto curHeight = spr->m_image->get_height();
+
+			Glib::RefPtr<Gdk::Pixbuf> img;
+			if ((oldWidth!=curWidth)||(oldHeight!=curHeight)){
+				auto bits_per_sample = oldImg->get_bits_per_sample();
+				img = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, TRUE, bits_per_sample, oldWidth, oldHeight);
+				img->add_alpha(true,0,0,0);
+			}else{
+				img = spr->m_image;
+			}
+            oldImg->copy_area( 0, 0, curWidth, curHeight, img, 0, 0);
+			spr->m_image = img;
+			signal_sprite_pick().emit(m_liste_sprites[m_id_select]->m_image);
+			m_refGdkWindow->invalidate(true);
+
+		}
+
+	}
+
 }

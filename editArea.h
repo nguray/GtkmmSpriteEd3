@@ -35,6 +35,13 @@ class editArea : public Gtk::Widget
         typedef sigc::signal<void, guint32> type_signal_backcolor_pick;
         type_signal_backcolor_pick signal_backcolor_pick();
 
+        typedef sigc::signal<void> type_save_image_state;
+        type_save_image_state signal_save_image_state();
+        type_save_image_state      m_signal_save_image_state;
+
+        typedef sigc::signal<void> type_restore_image_state;
+        type_restore_image_state signal_restore_image_state();
+        type_restore_image_state   m_signal_restore_image_state;
 
 
         void    on_palette_color_select(bool f, guint32 selColor);

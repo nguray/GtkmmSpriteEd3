@@ -1,3 +1,4 @@
+#include "editArea.h"
 #include "editModeFill.h"
 #include <iostream>
 
@@ -13,7 +14,7 @@ editModeFill::~editModeFill()
 
 }
 
-bool editModeFill::on_button_press_event(GdkEventButton *event)
+bool editModeFill::on_button_press_event(Gtk::Widget *w, GdkEventButton *event)
 {
     int         pixelX,pixelY;
     guint32     color= m_foreGroundColor;
@@ -24,7 +25,7 @@ bool editModeFill::on_button_press_event(GdkEventButton *event)
 
     if (MouseToPixel(tmx,tmy,pixelX,pixelY)){
         //-- Sauvegarder l'image d'origine
-        SaveState();
+        static_cast<editArea*>(w)->signal_save_image_state();
 
         if (event->button==1){
             color = m_foreGroundColor;
@@ -42,7 +43,7 @@ bool editModeFill::on_button_press_event(GdkEventButton *event)
     return false;
 }
 
-bool editModeFill::on_button_release_event(GdkEventButton *event)
+bool editModeFill::on_button_release_event(Gtk::Widget *w, GdkEventButton *event)
 {
     int         pixelX,pixelY;
    //---------------------------------------------------------
@@ -288,7 +289,7 @@ void editModeFill::FloodFill(Glib::RefPtr<Gdk::Pixbuf> pixbuf, gint fillX, gint 
 
 }
 
-bool editModeFill::on_motion_notify_event(GdkEventMotion *event)
+bool editModeFill::on_motion_notify_event(Gtk::Widget *w, GdkEventMotion *event)
 {
     //---------------------------------------------------------
     

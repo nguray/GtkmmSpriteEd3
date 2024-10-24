@@ -1,5 +1,7 @@
+#include "editArea.h"
 #include "editModeEllipse.h"
 #include <iostream>
+#include <memory>
 #include <utility>
 
 editModeEllipse::editModeEllipse()
@@ -31,46 +33,61 @@ editModeEllipse::~editModeEllipse() {
     }
 }
 
-bool editModeEllipse::on_button_press_event(GdkEventButton *event) {
-    int pixelX, pixelY;
+bool editModeEllipse::on_button_press_event(Gtk::Widget *w, GdkEventButton *event) {
+
+
+    int         pixelX,pixelY;
     //----------------------------------------------------
+
     int tmx = event->x - m_origin_x;
     int tmy = event->y - m_origin_y;
-    if (event->button == 1) {
 
-        if ((m_select_handle = HitHandle(tmx, tmy))!=NULL) {
+    if (event->button==1)
+    {
+
+        if (m_select_handle = HitHandle(tmx, tmy))
+        {
             std::cout << "editModeRect:Hit Handle" << std::endl;
             return false;
-        } else {
-
-            int x, y;
-            if (MouseToPixel(tmx, tmy, x, y)) {
-                if (m_rect_current_pix.PtInRect(x, y)) {
+        }
+        else
+        {
+            if (MouseToPixel(tmx, tmy, pixelX, pixelY))
+            {
+                if (m_rect_current_pix.PtInRect(pixelX, pixelY))
+                {
                     m_select_move_flag = true;
                     m_rect_current_pix_sav = m_rect_current_pix;
-                    m_start_pix_x = x;
-                    m_start_pix_y = y;
+                    m_start_pix_x = pixelY;
+                    m_start_pix_y = pixelY;
                     return false;
                 }
+
+                if (m_rect_current_pix.IsNULL()){
+                    if (!m_start_pt){
+                        m_start_pt = new Gdk::Point(pixelX, pixelY);
+                        //-- Sauvegarder l'image d'origine
+                        SaveStartState();
+                        static_cast<editArea*>(w)->signal_save_image_state().emit();
+                    }
+                }else{
+                    InitHandles();
+                    m_select_move_flag = false;
+                    m_rect_current_pix.SetNULL();
+                    return true;
+                }
+
             }
-        }
-    }
 
-    InitHandles();
-    m_select_move_flag = false;
-    m_rect_current_pix.SetNULL();
-    if (MouseToPixel(tmx, tmy, pixelX, pixelY)) {
-        if (!m_start_pt) {
-            m_start_pt = new Gdk::Point(pixelX, pixelY);
-            //-- Sauvegarder l'image d'origine
-            SaveState();
         }
-    }
 
+    }
+    
     return true;
+
 }
 
-bool editModeEllipse::on_button_release_event(GdkEventButton *event) {
+bool editModeEllipse::on_button_release_event(Gtk::Widget *w, GdkEventButton *event) {
     int pixelX, pixelY;
     //---------------------------------------------------------
     std::cout << "editModePencil:on_button_release_event" << std::endl;
@@ -357,7 +374,7 @@ bool editModeEllipse::RectInEditArea(RRect &rect) {
     return true;
 }
 
-bool editModeEllipse::on_motion_notify_event(GdkEventMotion *event) {
+bool editModeEllipse::on_motion_notify_event(Gtk::Widget *w, GdkEventMotion *event) {
     guint8 r, g, b, a;
     int pixelX, pixelY;
     bool fButton = false;
@@ -623,4 +640,6 @@ void editModeEllipse::InitHandles() {
 
 void editModeEllipse::init_mode() {
     InitHandles();
+    m_rect_current_pix.SetNULL();
+    m_rect_current_pix_sav.SetNULL();
 }
