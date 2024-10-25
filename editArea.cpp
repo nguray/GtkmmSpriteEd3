@@ -705,6 +705,7 @@ void editArea::CutSelect()
             m_refGdkWindow->invalidate(true);
         }
    }
+   
 }
 
 void editArea::Undo()
