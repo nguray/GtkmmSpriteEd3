@@ -1,13 +1,15 @@
+#include "RHandle.h"
 #include "editArea.h"
 #include "editModeSelect.h"
 #include <iostream>
+#include <memory>
 
 editModeSelect::editModeSelect()
-    : editMode(), m_start_pt(NULL), m_end_pt(NULL), m_select_handle(NULL),
+    : editMode(), m_start_pt(nullptr), m_end_pt(nullptr), m_select_handle(nullptr),
       m_f_draw_handles(false) {
   // ctor
   for (int i = 0; i < 4; i++) {
-    m_handles[i] = new RHandle(0, 0, 0, 0);
+    m_handles[i] = std::make_shared<RHandle>(0, 0, 0, 0);
   }
   m_handles[RHandle::TOP_LEFT]->m_x = &m_x1;
   m_handles[RHandle::TOP_LEFT]->m_y = &m_y1;
@@ -26,10 +28,7 @@ editModeSelect::editModeSelect()
 
 editModeSelect::~editModeSelect() {
   // dtor
-  for (int i = 0; i < 4; i++) {
-    if (m_handles[i])
-      delete (m_handles[i]);
-  }
+
 }
 
 bool editModeSelect::on_button_press_event(Gtk::Widget *w, GdkEventButton *event) {
@@ -59,7 +58,7 @@ bool editModeSelect::on_button_press_event(Gtk::Widget *w, GdkEventButton *event
       if (MouseToPixel(tmx, tmy, pixelX, pixelY)) {
         if (!m_start_pt) {
           m_f_draw_handles = true;
-          m_start_pt = new Gdk::Point(pixelX, pixelY);
+          m_start_pt = std::make_shared<Gdk::Point>(pixelX, pixelY);
         }
       }
     }
@@ -72,14 +71,8 @@ bool editModeSelect::on_button_release_event(Gtk::Widget *w, GdkEventButton *eve
   int pixelX, pixelY;
   //---------------------------------------------------------
   std::cout << "editModePencil:on_button_release_event" << std::endl;
-  if (m_start_pt) {
-    delete m_start_pt;
-    m_start_pt = NULL;
-  }
-  if (m_end_pt) {
-    delete m_end_pt;
-    m_end_pt = NULL;
-  }
+  m_start_pt = nullptr;
+  m_end_pt = nullptr;
 
   //-- Normalize le rectangle de séléction
   if (!m_rect_select_pix.IsNULL()) {
@@ -109,7 +102,7 @@ bool editModeSelect::on_button_release_event(Gtk::Widget *w, GdkEventButton *eve
   return true;
 }
 
-RHandle *editModeSelect::HitHandle(int mx, int my) {
+std::shared_ptr<RHandle> editModeSelect::HitHandle(int mx, int my) {
   //---------------------------------------------------------
   // Cairo::Matrix m;
   // m = Cairo::identity_matrix();
@@ -194,7 +187,7 @@ bool editModeSelect::on_motion_notify_event(Gtk::Widget *w, GdkEventMotion *even
       }
       // RestoreSprite();
       if (!m_end_pt) {
-        m_end_pt = new Gdk::Point(pixelX, pixelY);
+        m_end_pt = std::make_shared<Gdk::Point>(pixelX, pixelY);
       } else {
         m_end_pt->set_x(pixelX);
         m_end_pt->set_y(pixelY);

@@ -5,10 +5,10 @@
 #include <utility>
 
 editModeEllipse::editModeEllipse()
-    : editMode(), m_start_pt(NULL), m_end_pt(NULL), m_select_handle(NULL) {
+    : editMode(), m_start_pt(nullptr), m_end_pt(nullptr), m_select_handle(nullptr) {
     // ctor
     for (int i = 0; i < 4; i++) {
-        m_handles[i] = new RHandle(0, 0, 0, 0);
+        m_handles[i] = std::make_shared<RHandle>(0, 0, 0, 0);
     }
 
     m_handles[RHandle::TOP_LEFT]->m_x = &m_x1;
@@ -28,9 +28,7 @@ editModeEllipse::editModeEllipse()
 
 editModeEllipse::~editModeEllipse() {
     // dtor
-    for (int i = 0; i < 4; i++) {
-        if (m_handles[i]) delete (m_handles[i]);
-    }
+   
 }
 
 bool editModeEllipse::on_button_press_event(Gtk::Widget *w, GdkEventButton *event) {
@@ -65,7 +63,7 @@ bool editModeEllipse::on_button_press_event(Gtk::Widget *w, GdkEventButton *even
 
                 if (m_rect_current_pix.IsNULL()){
                     if (!m_start_pt){
-                        m_start_pt = new Gdk::Point(pixelX, pixelY);
+                        m_start_pt = std::make_shared<Gdk::Point>(pixelX, pixelY);
                         //-- Sauvegarder l'image d'origine
                         SaveStartState();
                         static_cast<editArea*>(w)->signal_save_image_state().emit();
@@ -91,14 +89,8 @@ bool editModeEllipse::on_button_release_event(Gtk::Widget *w, GdkEventButton *ev
     int pixelX, pixelY;
     //---------------------------------------------------------
     std::cout << "editModePencil:on_button_release_event" << std::endl;
-    if (m_start_pt) {
-        delete m_start_pt;
-        m_start_pt = NULL;
-    }
-    if (m_end_pt) {
-        delete m_end_pt;
-        m_end_pt = NULL;
-    }
+    m_start_pt = nullptr;
+    m_end_pt = nullptr;
 
     //-- Normalize le rectangle de sélection
     if (!m_rect_current_pix.IsNULL()) {
@@ -347,7 +339,7 @@ void editModeEllipse::DrawEllipse(Glib::RefPtr<Gdk::Pixbuf> pixbuf,
 }
 
 
-RHandle *editModeEllipse::HitHandle(int mx, int my) {
+std::shared_ptr<RHandle> editModeEllipse::HitHandle(int mx, int my) {
     //---------------------------------------------------------
     for (int i = 0; i < 4; i++) {
         if (m_handles[i]->PtInRect(mx, my)) {
@@ -439,7 +431,7 @@ bool editModeEllipse::on_motion_notify_event(Gtk::Widget *w, GdkEventMotion *eve
             }
             RestoreStartState();
             if (!m_end_pt) {
-                m_end_pt = new Gdk::Point(pixelX, pixelY);
+                m_end_pt = std::make_shared<Gdk::Point>(pixelX, pixelY);
             } else {
                 m_end_pt->set_x(pixelX);
                 m_end_pt->set_y(pixelY);

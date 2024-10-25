@@ -1,14 +1,15 @@
 #include "editArea.h"
 #include "editModeRect.h"
 #include <iostream>
+#include <memory>
 
 editModeRect::editModeRect():editMode(),
-        m_start_pt(NULL),m_end_pt(NULL),
-        m_select_handle(NULL)
+        m_start_pt(nullptr),m_end_pt(nullptr),
+        m_select_handle(nullptr)
 {
     //ctor
     for (int i=0;i<4;i++){
-        m_handles[i] = new RHandle(0,0,0,0);
+        m_handles[i] = std::make_shared<RHandle>(0,0,0,0);
     }
 
     m_handles[RHandle::TOP_LEFT]->m_x = &m_x1;
@@ -30,9 +31,6 @@ editModeRect::editModeRect():editMode(),
 editModeRect::~editModeRect()
 {
     //dtor
-    for (int i=0;i<4;i++){
-        if (m_handles[i]) delete (m_handles[i]);
-    }
 
 }
 
@@ -67,7 +65,7 @@ bool editModeRect::on_button_press_event(Gtk::Widget *w, GdkEventButton *event)
 
                 if (m_rect_current_pix.IsNULL()){
                     if (!m_start_pt){
-                        m_start_pt = new Gdk::Point(pixelX, pixelY);
+                        m_start_pt = std::make_shared<Gdk::Point>(pixelX,pixelY);
                         //-- Sauvegarder l'image d'origine
                         SaveStartState();
                         static_cast<editArea*>(w)->signal_save_image_state().emit();
@@ -92,14 +90,8 @@ bool editModeRect::on_button_release_event(Gtk::Widget *w, GdkEventButton *event
     int         pixelX,pixelY;
    //---------------------------------------------------------
     std::cout << "editModePencil:on_button_release_event" << std::endl;
-    if (m_start_pt){
-        delete m_start_pt;
-        m_start_pt = NULL;
-    }
-    if (m_end_pt){
-        delete m_end_pt;
-        m_end_pt = NULL;
-    }
+    m_start_pt = nullptr;
+    m_end_pt = nullptr;
 
     //-- Normalize le rectangle de sélection
     if (!m_rect_current_pix.IsNULL()){
@@ -131,17 +123,12 @@ bool editModeRect::on_button_release_event(Gtk::Widget *w, GdkEventButton *event
 
 void editModeRect::DrawRectangle(Glib::RefPtr<Gdk::Pixbuf> pixbuf, int startX,int startY, int endX, int endY, guint32 col)
 {
-	int dum;
     //---------------------------------------------------------
     if (endX<startX){
-        dum = startX;
-        startX = endX;
-        endX = dum;
+        std::swap<int>(endX,startX);
     }
     if (endY<startY){
-        dum = startY;
-        startY = endY;
-        endY = dum;
+        std::swap<int>(endY,startY);
     }
     if ((endX!=startX)||(endY!=startY)){
         //-- Tracer le rectangle
@@ -155,7 +142,6 @@ void editModeRect::DrawRectangle(Glib::RefPtr<Gdk::Pixbuf> pixbuf, int startX,in
 
 void editModeRect::FillRectangle(Glib::RefPtr<Gdk::Pixbuf> pixbuf, int startX,int startY, int endX, int endY, guint32 col)
 {
-	int     dum;
     int     width, height, rowstride, n_channels;
     guchar *pixels, *p;
     int     yOffset;
@@ -165,14 +151,10 @@ void editModeRect::FillRectangle(Glib::RefPtr<Gdk::Pixbuf> pixbuf, int startX,in
         return;
 
     if (endX<startX){
-        dum = startX;
-        startX = endX;
-        endX = dum;
+        std::swap<int>(endX,startX);
     }
     if (endY<startY){
-        dum = startY;
-        startY = endY;
-        endY = dum;
+        std::swap<int>(endY,startY);
     }
 
     if (startX<0){
@@ -215,7 +197,7 @@ void editModeRect::FillRectangle(Glib::RefPtr<Gdk::Pixbuf> pixbuf, int startX,in
     }
 }
 
-RHandle *editModeRect::HitHandle(int mx,int my)
+std::shared_ptr<RHandle> editModeRect::HitHandle(int mx,int my)
 {
     //---------------------------------------------------------
     // Cairo::Matrix m;
@@ -271,7 +253,6 @@ bool editModeRect::on_motion_notify_event(Gtk::Widget *w, GdkEventMotion *event)
             PixelToMouse(pixelX, pixelY, left, top);
             *(m_select_handle->m_x) = left;
             *(m_select_handle->m_y) = top;
-
 
             int startX, startY;
             int endX, endY;
@@ -333,7 +314,7 @@ bool editModeRect::on_motion_notify_event(Gtk::Widget *w, GdkEventMotion *event)
             
             if (!m_end_pt)
             {
-                m_end_pt = new Gdk::Point(pixelX, pixelY);
+                m_end_pt = std::make_shared<Gdk::Point>(pixelX, pixelY);
             }
             else
             {
@@ -346,14 +327,10 @@ bool editModeRect::on_motion_notify_event(Gtk::Widget *w, GdkEventMotion *event)
             int endY = m_end_pt->get_y();
 
             if (startX>endX){
-                int dum = startX;
-                startX = endX;
-                endX = dum;
+                std::swap<int>(startX,endX);
             }
             if (startY>endY){
-                int dum = startY;
-                startY = endY;
-                endY = dum;
+                std::swap<int>(startY,endY);
             }
 
             //--
@@ -374,7 +351,6 @@ bool editModeRect::on_motion_notify_event(Gtk::Widget *w, GdkEventMotion *event)
 
             if ((startX != endX) || (startY != endY))
             {
-
                 if (event->state & GDK_CONTROL_MASK)
                 {
                     m_current_fill_mode = true;
