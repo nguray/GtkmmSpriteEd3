@@ -58,7 +58,7 @@ bool editModeEllipse::on_button_press_event(Gtk::Widget *w, GdkEventButton *even
                 {
                     m_select_move_flag = true;
                     m_rect_current_pix_sav = m_rect_current_pix;
-                    m_start_pix_x = pixelY;
+                    m_start_pix_x = pixelX;
                     m_start_pix_y = pixelY;
                     return false;
                 }

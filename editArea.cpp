@@ -619,7 +619,7 @@ void editArea::on_image_received(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf)
 {
     //------------------------------------------------
 
-    signal_save_image_state();
+    m_edit_mode->SaveStartState();
 
     int w,h;
     int wi = pixbuf->get_width();
@@ -659,6 +659,7 @@ void editArea::PasteCopy()
     //------------------------------------------------
     Glib::RefPtr<Gtk::Clipboard> clip = Gtk::Clipboard::get(GDK_SELECTION_CLIPBOARD);
     if (clip->wait_is_image_available()){
+        signal_save_image_state().emit();
         SetEditMode(editArea::EM_SELECT);
         clip->request_image(sigc::mem_fun(*this,&editArea::on_image_received));
         //--
@@ -682,7 +683,7 @@ void editArea::CutSelect()
             }
             m_edit_mode->FillPixBuf(m_edit_mode->m_select_pixbuf,m_edit_mode->m_rect_select_pix,m_edit_mode->m_backGroundColor);
             m_edit_mode->BlitPixBuf(m_edit_mode->m_select_pixbuf, 0, 0, m_edit_mode->m_sprite, m_edit_mode->m_rect_select_pix);
-            signal_save_image_state();
+            signal_save_image_state().emit();
             m_edit_mode->m_rect_copy_pix = m_edit_mode->m_rect_select_pix;
             m_edit_mode->m_copy_pixbuf = m_edit_mode->m_select_pixbuf->copy();
             m_refGdkWindow->invalidate(true);
