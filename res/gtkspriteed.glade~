@@ -4,6 +4,7 @@
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkDialog" id="NewSpriteDlg">
     <property name="can-focus">False</property>
+    <property name="can-default">True</property>
     <property name="title" translatable="yes">New Sprite</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
@@ -18,6 +19,7 @@
         <child internal-child="action_area">
           <object class="GtkButtonBox">
             <property name="can-focus">False</property>
+            <property name="can-default">True</property>
             <property name="layout-style">end</property>
             <child>
               <placeholder/>
@@ -73,6 +75,7 @@
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
                         <property name="has-focus">True</property>
+                        <property name="can-default">True</property>
                         <property name="has-default">True</property>
                         <property name="halign">center</property>
                         <property name="margin-start">25</property>
@@ -121,6 +124,7 @@
                       <object class="GtkEntry" id="SpriteWidth">
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
+                        <property name="can-default">True</property>
                         <property name="has-default">True</property>
                         <property name="halign">center</property>
                         <property name="margin-start">25</property>
@@ -160,6 +164,7 @@
   </object>
   <object class="GtkWindow" id="spriteedwin">
     <property name="can-focus">False</property>
+    <property name="can-default">True</property>
     <child>
       <object class="GtkBox" id="vbox">
         <property name="visible">True</property>
