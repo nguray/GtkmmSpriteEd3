@@ -334,7 +334,7 @@ bool spriteArea::on_button_press_event(GdkEventButton *event)
 			}else{
 				m_id_select = id;
 			}
-			m_signal_sprite_pick.emit(m_liste_sprites[id]->m_image);
+			m_signal_sprite_pick.emit(m_liste_sprites[m_id_select]->m_image);
 		}
 
 	}else if (event->button == 3){
