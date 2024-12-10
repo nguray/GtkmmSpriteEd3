@@ -21,6 +21,7 @@ myApplication::myApplication():
 Glib::RefPtr<myApplication> myApplication::create()
 {
     return Glib::RefPtr<myApplication> (new myApplication());
+    
 }
 
 void myApplication::on_action_quit()
